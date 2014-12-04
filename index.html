@@ -16,7 +16,7 @@
     // --allow-file-access-from-files should be added when starting chrome
     // so local files can be loaded. This is because of security restrictions
 
-    var renderer, camera, controls, scene, pointLight;
+    var renderer, camera, controls, scene, pointLight, sphere;
 
     init();
     mainLoop();
@@ -30,43 +30,45 @@
 
         //camera
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.z = 5;
+        camera.position.z = 1;
 
         //control over the mouse
         controls = new THREE.TrackballControls(camera);
         controls.addEventListener('change', render);
-        controls.minDistance = 6;
+        controls.minDistance = 1.5;
         controls.maxDistance = 14;
         controls.zoomSpeed = 0.7;
 
         //scene
         scene = new THREE.Scene();
 
-        var geometry = new THREE.SphereGeometry(3, 32, 32);
+        var geometry = new THREE.SphereGeometry(0.5, 100, 100);
 
         var material = new THREE.MeshPhongMaterial({
-            // light
-            specular: '#ffffff',
-            // intermediate
-            color: '#ffffff',
-            // dark
-            emissive: '#ffffff',
-            shininess: 100
+            map: THREE.ImageUtils.loadTexture('textures/2_no_clouds_4k.jpg'),
+            bumpMap: THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg'),
+            bumpScale: 0.005,
+            specularMap: THREE.ImageUtils.loadTexture('textures/water_4k.png'),
+            specular: new THREE.Color('grey')
         });
 
-        material.map = THREE.ImageUtils.loadTexture('textures/earthmap1k.jpg');
-        var sphere = new THREE.Mesh(geometry, material);
+        sphere = new THREE.Mesh(geometry, material);
         sphere.overdraw = true;
         scene.add(sphere);
 
+        //var sky = new THREE.Mesh(new THREE.SphereGeometry(90, 64, 64),
+        //                         new THREE.MeshBasicMaterial({
+        //                            map: THREE.ImageUtils.loadTexture('textures/galaxy_starfield.png'),
+        //                            side: THREE.BackSide
+        //                         }));
+        //scene.add(sky);
 
-        //pointLight = new THREE.PointLight(0xFFFFFF);
 
-        //// set its position
-        //pointLight.position.x = 10;
-        //pointLight.position.y = 50;
-        //pointLight.position.z = 130;
-        //scene.add(pointLight);
+        scene.add(new THREE.AmbientLight(0xffffff));
+
+        var light = new THREE.DirectionalLight(0xffffff, 0.2);
+        light.position.set(50, 0, 50);
+        scene.add(light);
     }
 
     function mainLoop() 
@@ -79,6 +81,7 @@
     function update()
     {
         controls.update();
+        sphere.rotation.y += 0.0005;
     }
 
     function render()
