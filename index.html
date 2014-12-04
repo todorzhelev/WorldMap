@@ -16,7 +16,7 @@
     var renderer, camera, controls, scene, pointLight;
 
     init();
-    animate();
+    mainLoop();
 
     function init() {
         //renderer
@@ -66,12 +66,16 @@
         scene.add(sphere);
     }
 
-    function animate() 
+    function mainLoop() 
     { 
-        requestAnimationFrame(animate);
-        controls.update();
-
+        requestAnimationFrame(mainLoop);
+        update();
         render();
+    }
+
+    function update()
+    {
+        controls.update();
     }
 
     function render()
