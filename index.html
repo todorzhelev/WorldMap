@@ -97,6 +97,10 @@
         light.position.set(0, 50, 0);
         scene.add(light);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //listeners for mouse move mouse down and mouse up
+
         document.body.addEventListener('mousemove', function (e){ onMouseMove(e);}, false);
         document.body.addEventListener('mousedown', function (e) {onMouseDown(e);}, false);
         document.body.addEventListener('mouseup', function (e) {onMouseUp(e);}, false);
@@ -125,7 +129,7 @@
         mouseY = event.clientY;
     }
 
-    function onMouseUp(evt)
+    function onMouseUp(event)
     {
         mouseDown = false;
     }
