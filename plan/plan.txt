@@ -1,12 +1,18 @@
 * only the planet should be rotated, not the whole scene
 
-* stars should be added at background
-	- the quality of the starts should be improved
-
 * the borders of the countries should be added
+
+* the quality of the textures should be improved
+	- the quality of the starts should be improved
+	- the bump map should be fixed
+
+* have to upload the app to be visible on the internet
+-------------------------------------------------------------
+
+not mandatory:
 
 * different countries should be clickable
 
 * there must be second version of the maps - 2d
 
-* have to upload the app to be visible on the internet
+

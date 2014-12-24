@@ -43,8 +43,9 @@ function init()
 	var planetMaterial = new THREE.MeshPhongMaterial;
 
 	planetMaterial.map = THREE.ImageUtils.loadTexture('textures/2_no_clouds_4k.jpg');
-	planetMaterial.bumpMap = THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg');
-	planetMaterial.bumpScale = 0.005;
+    //bump map is not working
+	//planetMaterial.bumpMap = THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg');
+	//planetMaterial.bumpScale = 2;
 	planetMaterial.specularMap = THREE.ImageUtils.loadTexture('textures/water_4k.png');
 	planetMaterial.specular = new THREE.Color('grey');
 
@@ -71,7 +72,8 @@ function init()
 	scene.add(new THREE.AmbientLight(0xffffff));
 
 	var light = new THREE.DirectionalLight(0xffffff, 0.2);
-	light.position.set(planet.position.x, planet.position.y, planet.position.z);
+    //light.position.set(planet.position.x, planet.position.y, planet.position.z);
+	light.position.set(0, 50, 0);
 	scene.add(light);
 }
 
@@ -85,7 +87,7 @@ function mainLoop()
 function update()
 {
 	controls.update();
-	planet.rotation.y += 0.0005;
+	planet.rotation.y += 0.0003;
 }
 
 function render()
