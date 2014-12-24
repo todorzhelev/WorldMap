@@ -1,5 +1,3 @@
-* only the planet should be rotated with the mouse, not the whole scene
-
 * the borders of the countries should be added
 
 * the quality of the textures should be improved
