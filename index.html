@@ -17,6 +17,11 @@
 
     var renderer, camera, controls, scene, pointLight, planet, sky;
 
+    var rotateXMin = 0.7;
+    var rotateXMax = -0.7;
+    var rotateX = 0;
+    var rotateStep = 0.005;
+
     init();
     mainLoop();
 
@@ -43,6 +48,7 @@
         controls.minDistance = 17;
         controls.maxDistance = 70;
         controls.zoomSpeed = 0.7;
+       // controls.noRotate = true;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,10 +76,16 @@
 
         // the environment map
 
-        var skyGeometry = new THREE.SphereGeometry(200, 64, 64);
+        var skyGeometry = new THREE.SphereGeometry(900, 64, 64);
 
         var skyMaterial = new THREE.MeshPhongMaterial;
-        skyMaterial.map = THREE.ImageUtils.loadTexture('textures/galaxy_starfield.png');
+        var texture = THREE.ImageUtils.loadTexture('textures/galaxy_starfield1.jpg');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(12, 12);
+
+        skyMaterial.map = texture;
+
         skyMaterial.side = THREE.BackSide;
 
         sky = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -98,11 +110,32 @@
         render();
     }
 
+    function rotatePlanetByX()
+    {
+        rotateX += rotateStep;
+
+        if (rotateX > rotateXMin)
+        {
+            rotateStep = -rotateStep;
+            rotateX = rotateXMin;
+        }
+        else if (rotateX < rotateXMax)
+        {
+            rotateStep = -rotateStep;
+            rotateX = rotateXMax;
+        }
+
+        planet.rotateX(rotateStep);
+    }
+
     function update()
     {
         controls.update();
-        controls.
-        planet.rotation.y += 0.0003;
+        
+       // rotatePlanetByX();
+       
+        planet.rotateY(0.003);
+       // planet.rotation.y += 0.0003;
     }
 
     function render()

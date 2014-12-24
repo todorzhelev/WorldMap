@@ -1,9 +1,8 @@
-* only the planet should be rotated, not the whole scene
+* only the planet should be rotated with the mouse, not the whole scene
 
 * the borders of the countries should be added
 
 * the quality of the textures should be improved
-	- the quality of the starts should be improved
 	- the bump map should be fixed
 
 * have to upload the app to be visible on the internet
