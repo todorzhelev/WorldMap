@@ -15,7 +15,7 @@
     // --allow-file-access-from-files should be added when starting chrome
     // so local files can be loaded. This is because of security restrictions
 
-    var renderer, camera, controls, scene, pointLight, planet, sky;
+    var renderer, camera, controls, scene, pointLight, planet, sky, stats;
     var mouseDown = false, mouseX = 0, mouseY = 0;
 
     init();
@@ -70,7 +70,7 @@
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // the environment map
+        // the sky
 
         var skyGeometry = new THREE.SphereGeometry(900, 64, 64);
 
@@ -103,7 +103,21 @@
 
         document.body.addEventListener('mousemove', function (e){ onMouseMove(e);}, false);
         document.body.addEventListener('mousedown', function (e) {onMouseDown(e);}, false);
-        document.body.addEventListener('mouseup', function (e) {onMouseUp(e);}, false);
+        document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //statistics
+        stats = new Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+
+        // align top-left
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.bottom = '0px';
+
+        document.body.appendChild(stats.domElement);
     }
 
 
@@ -144,8 +158,12 @@
     function mainLoop()
     {
         requestAnimationFrame(mainLoop);
-        update();
-        render();
+        stats.begin();
+
+            update();
+            render();
+
+        stats.end();
     }
 
     function update()
