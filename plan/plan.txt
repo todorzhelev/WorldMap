@@ -3,13 +3,16 @@
 * the quality of the textures should be improved
 	- the bump map should be fixed
 
-* have to upload the app to be visible on the internet
 -------------------------------------------------------------
 
 not mandatory:
 
-* different countries should be clickable
+* night mode with lights only?
 
 * there must be second version of the maps - 2d
+
+* different countries should be clickable
+
+
 
 
