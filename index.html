@@ -106,6 +106,8 @@
         document.body.addEventListener('mousemove', function (e){ onMouseMove(e);}, false);
         document.body.addEventListener('mousedown', function (e) {onMouseDown(e);}, false);
         document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+        document.body.addEventListener('mousewheel', function (e) { onMouseWheel(e); }, false);
+        document.body.addEventListener("DOMMouseScroll", function (e) { onMouseWheel(e); }, false);//Mozilla
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,24 @@
         //document.body.appendChild(stats.domElement);
     }
 
+    function onMouseWheel(event) {
+
+        var delta = 0;
+
+        if (event.wheelDelta) //Chrome
+        { 
+            delta = -event.wheelDelta / 120;
+        }
+        else if (event.detail) //Mozilla
+        {
+            delta = event.detail / 3;
+        }
+
+        if (camera.position.z + delta > 20 && camera.position.z + delta < 50)
+        {
+            camera.translateZ(delta);
+        }
+    }
 
     function onMouseMove(event)
     {
@@ -304,6 +324,50 @@
  
     </div>
 
+     <!-- find route button -->
+
+    <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;font-size:15pt;font-family:'Times New Roman';">
+
+        <form action="#openRoute">
+            <input type="submit" name ="findRoute" id ="findRoute" style="font-size:15pt;font-family:'Times New Roman'" value ="Find route">
+        </form>
+ 
+    </div>
+
+    <!-- find route dialog -->
+
+    <div id="openRoute" class="routeDialog">
+
+         <div>
+             <a href="#closeButtonRoute" title="Close" class="closeButtonRoute">X</a>
+
+             <div style="position:relative;left:10%;">
+                 <form id="Form3">
+           
+                     <br /><br />
+
+                     <label style="font-size:25pt;font-family:'Times New Roman'">Find route between places</label>
+                     
+                     <br /><br />
+
+                     Starting place <br/> 
+                     <input name="email" id="Text5" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
+                     <br /><br />
+
+                     Target place <br/> 
+                     <input name="username" id="Text6" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
+                     <br /><br />
+
+                    <input type="button" style="font-size:15pt;font-family:'Times New Roman'" value="Find route" />
+
+                </form>
+
+            </div>
+            
+
+         </div>
+
+    </div>
 
 
 

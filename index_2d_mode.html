@@ -39,21 +39,21 @@
 
         //camera
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.set(80, -40, 200);
+        camera.position.set(80, 100, 350);
 
         scene.add(camera);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //movement with the mouse. Dragging the right mouse button moves the camera
-        controls = new THREE.TrackballControls(camera,renderer.domElement);
-        //controls.addEventListener('change', Render);
-        controls.minDistance = 50;
-        controls.maxDistance = 300;
-        controls.zoomSpeed = 0.7;
-        controls.noRotate = true;
-        //the camera should look at (80,-40,0)
-        controls.target.set(80, -40, 0);
+        //controls = new THREE.TrackballControls(camera,renderer.domElement);
+        ////controls.addEventListener('change', Render);
+        //controls.minDistance = 50;
+        //controls.maxDistance = 300;
+        //controls.zoomSpeed = 0.7;
+        //controls.noRotate = true;
+        ////the camera should look at (80,-40,0)
+        //controls.target.set(80, -40, 0);
 
        
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,31 +68,6 @@
 
         scene.add(planet);
 
-
-
-
-
-
-
-
-
-
-
-        //// the planet
-        //var planetGeometry = new THREE.SphereGeometry(10, 100, 100);
-
-        //var planetMaterial = new THREE.MeshPhongMaterial;
-
-        //planetMaterial.map = THREE.ImageUtils.loadTexture('textures/NASA_world.jpg');
-        ////bump map is not working
-        ////planetMaterial.bumpMap = THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg');
-        ////planetMaterial.bumpScale = 2;
-        //planetMaterial.specularMap = THREE.ImageUtils.loadTexture('textures/water_4k.png');
-        //planetMaterial.specular = new THREE.Color('grey');
-
-        //planet = new THREE.Mesh(planetGeometry, planetMaterial);
-        //scene.add(planet);
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////     
 
         // ambient light
@@ -106,9 +81,11 @@
 
         //listeners for mouse move mouse down and mouse up
 
-       // document.body.addEventListener('mousemove', function (e) { onMouseMove(e); }, false);
-       // document.body.addEventListener('mousedown', function (e) { onMouseDown(e); }, false);
-       // document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+        document.body.addEventListener('mousemove', function (e) { onMouseMove(e); }, false);
+        document.body.addEventListener('mousedown', function (e) { onMouseDown(e); }, false);
+        document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+        document.body.addEventListener('mousewheel', function (e) { onMouseWheel(e); }, false);
+        document.body.addEventListener("DOMMouseScroll", function (e) { onMouseWheel(e); }, false);//Mozilla
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +102,23 @@
         //document.body.appendChild(stats.domElement);
     }
 
+    function onMouseWheel(event) {
+
+        var delta = 0;
+
+        if (event.wheelDelta) //Chrome
+        {
+            delta = -event.wheelDelta / 120;
+        }
+        else if (event.detail) //Mozilla
+        {
+            delta = event.detail*3;
+        }
+
+        if (camera.position.z + delta > 100 && camera.position.z + delta < 400) {
+            camera.translateZ(delta);
+        }
+    }
 
     function onMouseMove(event) {
         if (!mouseDown) {
@@ -149,9 +143,36 @@
         mouseDown = false;
     }
 
-    function rotatePlanet(deltaX, deltaY) {
-        planet.rotation.y += deltaX / 300;
-        planet.rotation.x += deltaY / 300;
+    function rotatePlanet(deltaX, deltaY)
+    {
+        var currentX = planet.position.x;
+        var currentY = planet.position.y;
+
+        deltaX = -(deltaX / 5);
+        deltaY = (deltaY / 5);
+
+        planet.geometry.computeBoundingBox();
+        
+        var offsetX = 200;
+        var offsetY = 100;
+
+        if (camera.position.x + deltaX + offsetX > planet.geometry.boundingBox.max.x ||
+            camera.position.x + deltaX - offsetX < planet.geometry.boundingBox.min.x)
+        {
+            deltaX = 0;
+        }
+
+        if (camera.position.y + deltaY + offsetY > planet.geometry.boundingBox.max.y ||
+            camera.position.y + deltaY - offsetY < planet.geometry.boundingBox.min.y)
+        {
+            deltaY = 0;
+        }
+
+        camera.translateX(deltaX);
+        camera.translateY(deltaY);
+
+        //planet.rotation.y += deltaX / 300;
+        //planet.rotation.x += deltaY / 300;
     }
 
 
@@ -167,13 +188,7 @@
 
     function update()
     {
-        if (camera.position.x <= 120) {
-            controls.update();
-        }
-        else {
-
-            camera.position.setX(120)
-        }
+            //controls.update();
     }
 
     function render() {
@@ -306,8 +321,50 @@
 
 
 
+     <!-- find route button -->
 
-</form>
+    <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;font-size:15pt;font-family:'Times New Roman';">
+
+        <form action="#openRoute">
+            <input type="submit" name ="findRoute" id ="findRoute" style="font-size:15pt;font-family:'Times New Roman'" value ="Find route">
+        </form>
+ 
+    </div>
+
+    <!-- find route dialog -->
+
+    <div id="openRoute" class="routeDialog">
+
+         <div>
+             <a href="#closeButtonRoute" title="Close" class="closeButtonRoute">X</a>
+
+             <div style="position:relative;left:10%;">
+                 <form id="Form3">
+           
+                     <br /><br />
+
+                     <label style="font-size:25pt;font-family:'Times New Roman'">Find route between places</label>
+                     
+                     <br /><br />
+
+                     Starting place <br/> 
+                     <input name="email" id="Text5" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
+                     <br /><br />
+
+                     Target place <br/> 
+                     <input name="username" id="Text6" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
+                     <br /><br />
+
+                    <input type="button" style="font-size:15pt;font-family:'Times New Roman'" value="Find route" />
+
+                </form>
+
+            </div>
+            
+
+         </div>
+
+    </div>
 
 </body> 
 
