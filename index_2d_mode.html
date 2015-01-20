@@ -22,8 +22,7 @@
     init();
     mainLoop();
 
-    function init()
-    {
+    function init() {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //renderer
@@ -33,62 +32,66 @@
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //camera
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.setZ(40);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        //control over the mouse
-       // controls = new THREE.TrackballControls(camera,renderer.domElement);
-       //// controls.addEventListener('change', render);
-       // controls.minDistance = 17;
-       // controls.maxDistance = 70;
-       // controls.zoomSpeed = 0.7;
-       // controls.noRotate = true;
-       // controls.noPan = true;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         //scene
         scene = new THREE.Scene();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // the planet
-        var planetGeometry = new THREE.SphereGeometry(10, 100, 100);
+        //camera
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.set(80, -40, 200);
 
-        var planetMaterial = new THREE.MeshPhongMaterial;
-
-        planetMaterial.map = THREE.ImageUtils.loadTexture('textures/NASA_world.jpg');
-        //bump map is not working
-        //planetMaterial.bumpMap = THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg');
-        //planetMaterial.bumpScale = 2;
-        planetMaterial.specularMap = THREE.ImageUtils.loadTexture('textures/water_4k.png');
-        planetMaterial.specular = new THREE.Color('grey');
-
-        planet = new THREE.Mesh(planetGeometry, planetMaterial);
-        scene.add(planet);
+        scene.add(camera);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // the sky
+        //movement with the mouse. Dragging the right mouse button moves the camera
+        controls = new THREE.TrackballControls(camera,renderer.domElement);
+        //controls.addEventListener('change', Render);
+        controls.minDistance = 50;
+        controls.maxDistance = 300;
+        controls.zoomSpeed = 0.7;
+        controls.noRotate = true;
+        //the camera should look at (80,-40,0)
+        controls.target.set(80, -40, 0);
 
-        var skyGeometry = new THREE.SphereGeometry(900, 64, 64);
+       
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        var skyMaterial = new THREE.MeshPhongMaterial;
-        var texture = THREE.ImageUtils.loadTexture('textures/galaxy_starfield1.jpg');
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(12, 12);
+        var defaultSquareTexture = THREE.ImageUtils.loadTexture('textures/NASA_world.jpg');
 
-        skyMaterial.map = texture;
+        var defaultSquareMaterial = new THREE.MeshPhongMaterial({ map: defaultSquareTexture });
 
-        skyMaterial.side = THREE.BackSide;
+        var geometry = new THREE.PlaneGeometry(1000, 500, 1, 1);
 
-        sky = new THREE.Mesh(skyGeometry, skyMaterial);
+        planet = new THREE.Mesh(geometry, defaultSquareMaterial);
 
-        scene.add(sky);
+        scene.add(planet);
+
+
+
+
+
+
+
+
+
+
+
+        //// the planet
+        //var planetGeometry = new THREE.SphereGeometry(10, 100, 100);
+
+        //var planetMaterial = new THREE.MeshPhongMaterial;
+
+        //planetMaterial.map = THREE.ImageUtils.loadTexture('textures/NASA_world.jpg');
+        ////bump map is not working
+        ////planetMaterial.bumpMap = THREE.ImageUtils.loadTexture('textures/elev_bump_4k.jpg');
+        ////planetMaterial.bumpScale = 2;
+        //planetMaterial.specularMap = THREE.ImageUtils.loadTexture('textures/water_4k.png');
+        //planetMaterial.specular = new THREE.Color('grey');
+
+        //planet = new THREE.Mesh(planetGeometry, planetMaterial);
+        //scene.add(planet);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////     
 
@@ -103,9 +106,9 @@
 
         //listeners for mouse move mouse down and mouse up
 
-        document.body.addEventListener('mousemove', function (e){ onMouseMove(e);}, false);
-        document.body.addEventListener('mousedown', function (e) {onMouseDown(e);}, false);
-        document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+       // document.body.addEventListener('mousemove', function (e) { onMouseMove(e); }, false);
+       // document.body.addEventListener('mousedown', function (e) { onMouseDown(e); }, false);
+       // document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,10 +126,8 @@
     }
 
 
-    function onMouseMove(event)
-    {
-        if (!mouseDown)
-        {
+    function onMouseMove(event) {
+        if (!mouseDown) {
             return;
         }
 
@@ -138,45 +139,44 @@
         rotatePlanet(deltaX, deltaY);
     }
 
-    function onMouseDown(event)
-    {
+    function onMouseDown(event) {
         mouseDown = true;
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
 
-    function onMouseUp(event)
-    {
+    function onMouseUp(event) {
         mouseDown = false;
     }
 
-    function rotatePlanet(deltaX, deltaY)
-    {
+    function rotatePlanet(deltaX, deltaY) {
         planet.rotation.y += deltaX / 300;
         planet.rotation.x += deltaY / 300;
     }
 
 
-    function mainLoop()
-    {
+    function mainLoop() {
         requestAnimationFrame(mainLoop);
         stats.begin();
 
-            update();
-            render();
+        update();
+        render();
 
         stats.end();
     }
 
     function update()
     {
-      //  controls.update();
+        if (camera.position.x <= 120) {
+            controls.update();
+        }
+        else {
 
-        planet.rotation.y += 0.0003;
+            camera.position.setX(120)
+        }
     }
 
-    function render()
-    {
+    function render() {
         renderer.render(scene, camera);
     }
 </script>
@@ -294,12 +294,12 @@
 
     </div>
 
-    <!--2d mode button-->
+     <!--3d mode button-->
 
     <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;font-size:15pt;font-family:'Times New Roman';">
 
-        <form action="index_2d_mode.html">
-            <input type="submit" name ="register" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 2D mode">
+        <form action="index.html">
+            <input type="submit" name ="register" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
         </form>
  
     </div>
