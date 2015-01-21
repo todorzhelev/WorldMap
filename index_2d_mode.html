@@ -58,7 +58,7 @@
        
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        var defaultSquareTexture = THREE.ImageUtils.loadTexture('textures/NASA_world.jpg');
+        var defaultSquareTexture = THREE.ImageUtils.loadTexture('textures/NASA_world_reduced.jpg');
 
         var defaultSquareMaterial = new THREE.MeshPhongMaterial({ map: defaultSquareTexture });
 
@@ -115,7 +115,7 @@
             delta = event.detail*3;
         }
 
-        if (camera.position.z + delta > 100 && camera.position.z + delta < 233) {
+        if (camera.position.z + delta > 120 && camera.position.z + delta < 233) {
             camera.translateZ(delta);
         }
     }
@@ -170,9 +170,6 @@
 
         camera.translateX(deltaX);
         camera.translateY(deltaY);
-
-        //planet.rotation.y += deltaX / 300;
-        //planet.rotation.x += deltaY / 300;
     }
 
 
@@ -194,6 +191,13 @@
     function render() {
         renderer.render(scene, camera);
     }
+
+
+    function setVisibility(id, visibility)
+    {
+        document.getElementById(id).style.visibility = visibility;
+    }
+
 </script>
 
 
@@ -215,9 +219,7 @@
 
     <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;font-size:15pt;font-family:'Times New Roman';">
 
-        <form action="#openLogin">
-            <input type="submit" name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login">
-        </form>
+        <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
  
     </div>
 
@@ -226,7 +228,7 @@
      <div id="openLogin" class="loginDialog">
 
          <div>
-             <a href="#closeButtonLogin" title="Close" class="closeButtonLogin">X</a>
+             <a href="#openLogin"  onclick="setVisibility('openLogin', 'hidden');" title="Close" class="closeButtonLogin">X</a>
 
              <div style="position:relative;left:16%;">
                  <form id="Form1">
@@ -260,9 +262,7 @@
 
     <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;font-size:15pt;font-family:'Times New Roman';">
 
-        <form action="#openRegister">
-            <input type="submit" name ="register" id ="Submit1" style="font-size:15pt;font-family:'Times New Roman'" value ="Register">
-        </form>
+        <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
  
     </div>
 
@@ -271,7 +271,7 @@
      <div id="openRegister" class="registerDialog">
 
          <div>
-             <a href="#closeButtonRegister" title="Close" class="closeButtonRegister">X</a>
+             <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
              <div style="position:relative;left:16%;">
                  <form id="Form2">
@@ -320,14 +320,11 @@
     </div>
 
 
-
-     <!-- find route button -->
+    <!-- find route button -->
 
     <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;font-size:15pt;font-family:'Times New Roman';">
 
-        <form action="#openRoute">
-            <input type="submit" name ="findRoute" id ="findRoute" style="font-size:15pt;font-family:'Times New Roman'" value ="Find route">
-        </form>
+        <button name ="openRoute" id ="Button1" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRoute', 'visible');"> Find route </button>
  
     </div>
 
@@ -336,12 +333,12 @@
     <div id="openRoute" class="routeDialog">
 
          <div>
-             <a href="#closeButtonRoute" title="Close" class="closeButtonRoute">X</a>
+             <a href="#openRoute" onclick="setVisibility('openRoute', 'hidden');" title="Close" class="closeButtonRoute">X</a>
 
-             <div style="position:relative;left:10%;">
+             <div style="position:relative;left:8%;">
                  <form id="Form3">
            
-                     <br /><br />
+                     <br />
 
                      <label style="font-size:25pt;font-family:'Times New Roman'">Find route between places</label>
                      

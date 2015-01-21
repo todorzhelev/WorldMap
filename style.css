@@ -18,11 +18,12 @@ canvas
 	left: 0;
 	background: rgba(0,0,0,0.4);
 	z-index: 99999;
-	opacity:0;
-	-webkit-transition: opacity 200ms ease-in;
+	/*opacity:0;*/
+    visibility:hidden;
+	/*-webkit-transition: opacity 200ms ease-in;
 	-moz-transition: opacity 200ms ease-in;
-	transition: opacity 200ms ease-in;
-	pointer-events: none;
+	transition: opacity 200ms ease-in;*/
+	/*pointer-events: none;*/
 }
 
 .loginDialog:target {
@@ -74,11 +75,7 @@ canvas
 	left: 0;
 	background: rgba(0,0,0,0.4);
 	z-index: 99999;
-	opacity:0;
-	-webkit-transition: opacity 200ms ease-in;
-	-moz-transition: opacity 200ms ease-in;
-	transition: opacity 200ms ease-in;
-	pointer-events: none;
+    visibility:hidden;
 }
 
 .registerDialog:target {
@@ -131,11 +128,12 @@ canvas
     margin-left:50px;
 	background: rgba(0,0,0,0);
 	z-index: 99999;
-	opacity:0;
+    visibility:hidden;
+	/*opacity:0;
 	-webkit-transition: opacity 200ms ease-in;
 	-moz-transition: opacity 200ms ease-in;
 	transition: opacity 200ms ease-in;
-	pointer-events: none;
+	pointer-events: none;*/
 }
 
 .routeDialog:target {
