@@ -3,13 +3,8 @@ body
     margin: 0; 
 } 
     
-canvas 
-{ 
-    width: 100%; 
-    height: 100% 
-}
-
-.loginDialog {
+.loginDialog 
+{
 	position: fixed;
 	font-family: Arial, Helvetica, sans-serif;
 	top: 0;
@@ -18,20 +13,17 @@ canvas
 	left: 0;
 	background: rgba(0,0,0,0.4);
 	z-index: 99999;
-	/*opacity:0;*/
     visibility:hidden;
-	/*-webkit-transition: opacity 200ms ease-in;
-	-moz-transition: opacity 200ms ease-in;
-	transition: opacity 200ms ease-in;*/
-	/*pointer-events: none;*/
 }
 
-.loginDialog:target {
+.loginDialog:target 
+{
 	opacity:1;
 	pointer-events: auto;
 }
 
-.loginDialog > div {
+.loginDialog > div 
+{
 	width: 300px;
     height: 400px;
 	position: relative;
@@ -39,12 +31,10 @@ canvas
 	padding: 5px 20px 13px 20px;
 	border-radius: 10px;
 	background: #fff;
-	/*background: -moz-linear-gradient(#fff, #999);
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);*/
 }
 
-.closeButtonLogin {
+.closeButtonLogin 
+{
 	background: #606061;
 	color: #FFFFFF;
 	line-height: 25px;
@@ -58,15 +48,13 @@ canvas
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	/*-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;*/
 }
 
 .closeButtonLogin:hover { background: #00d9ff; }
 
 
-.registerDialog {
+.registerDialog 
+{
 	position: fixed;
 	font-family: Arial, Helvetica, sans-serif;
 	top: 0;
@@ -78,12 +66,14 @@ canvas
     visibility:hidden;
 }
 
-.registerDialog:target {
+.registerDialog:target 
+{
 	opacity:1;
 	pointer-events: auto;
 }
 
-.registerDialog > div {
+.registerDialog > div 
+{
 	width: 350px;
     height: 550px;
 	position: relative;
@@ -91,12 +81,10 @@ canvas
 	padding: 5px 20px 13px 20px;
 	border-radius: 10px;
 	background: #fff;
-	/*background: -moz-linear-gradient(#fff, #999);
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);*/
 }
 
-.closeButtonRegister {
+.closeButtonRegister 
+{
 	background: #606061;
 	color: #FFFFFF;
 	line-height: 25px;
@@ -110,14 +98,12 @@ canvas
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	/*-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;*/
 }
 
 .closeButtonRegister:hover { background: #00d9ff; }
 
-.routeDialog {
+.routeDialog 
+{
 	position: fixed;
 	font-family: Arial, Helvetica, sans-serif;
 	top: 0;
@@ -129,19 +115,16 @@ canvas
 	background: rgba(0,0,0,0);
 	z-index: 99999;
     visibility:hidden;
-	/*opacity:0;
-	-webkit-transition: opacity 200ms ease-in;
-	-moz-transition: opacity 200ms ease-in;
-	transition: opacity 200ms ease-in;
-	pointer-events: none;*/
 }
 
-.routeDialog:target {
+.routeDialog:target 
+{
 	opacity:1;
 	pointer-events: auto;
 }
 
-.routeDialog > div {
+.routeDialog > div 
+{
 	width: 300px;
     height: 350px;
 	position: relative;
@@ -149,12 +132,10 @@ canvas
 	padding: 5px 20px 13px 20px;
 	border-radius: 10px;
 	background: #fff;
-	/*background: -moz-linear-gradient(#fff, #999);
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);*/
 }
 
-.closeButtonRoute {
+.closeButtonRoute 
+{
 	background: #606061;
 	color: #FFFFFF;
 	line-height: 25px;
@@ -168,9 +149,6 @@ canvas
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	/*-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;*/
 }
 
 .closeButtonRoute:hover { background: #00d9ff; }

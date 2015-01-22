@@ -1,28 +1,27 @@
 <html> 
 <head> 
-    <title>TSUKBG</title> 
-
+    <title>TSuKBG</title> 
     <link rel="stylesheet" type="text/css" href="style.css" media="all"> 
 </head> 
 
 <body> 
 
 <script src="js/three.min.js"></script> 
-<script src="js/TrackballControls.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/stats.min.js"></script>
+
 <script>
 
-    // --allow-file-access-from-files should be added when starting chrome
+    // --allow-file-access-from-files should be added when starting chrome locally
     // so local files can be loaded. This is because of security restrictions
 
-    var renderer, camera, controls, scene, pointLight, planet, sky, stats;
+    var renderer, camera, scene, pointLight, worldPlane;
     var mouseDown = false, mouseX = 0, mouseY = 0;
+    var minZoom = 120, maxZoom = 233;
 
     init();
     mainLoop();
 
-    function init() {
+    function init()
+    {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //renderer
@@ -42,31 +41,15 @@
         camera.position.set(80, 100, 200);
 
         scene.add(camera);
-
+ 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //movement with the mouse. Dragging the right mouse button moves the camera
-        //controls = new THREE.TrackballControls(camera,renderer.domElement);
-        ////controls.addEventListener('change', Render);
-        //controls.minDistance = 50;
-        //controls.maxDistance = 300;
-        //controls.zoomSpeed = 0.7;
-        //controls.noRotate = true;
-        ////the camera should look at (80,-40,0)
-        //controls.target.set(80, -40, 0);
-
-       
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        var defaultSquareTexture = THREE.ImageUtils.loadTexture('textures/NASA_world_temp1.jpg');
-
-        var defaultSquareMaterial = new THREE.MeshPhongMaterial({ map: defaultSquareTexture });
-
+        var worldTexture = THREE.ImageUtils.loadTexture('textures/NASA_world_temp1.jpg');
+        var defaultWorldMaterial = new THREE.MeshPhongMaterial({ map: worldTexture });
         var geometry = new THREE.PlaneGeometry(1000, 500, 1, 1);
+        worldPlane = new THREE.Mesh(geometry, defaultWorldMaterial);
 
-        planet = new THREE.Mesh(geometry, defaultSquareMaterial);
-
-        scene.add(planet);
+        scene.add(worldPlane);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////     
 
@@ -79,31 +62,18 @@
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //listeners for mouse move mouse down and mouse up
+        //listeners for mouse move, mouse down, mouse up, mouse wheel
 
         document.body.addEventListener('mousemove', function (e) { onMouseMove(e); }, false);
         document.body.addEventListener('mousedown', function (e) { onMouseDown(e); }, false);
         document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
         document.body.addEventListener('mousewheel', function (e) { onMouseWheel(e); }, false);
-        document.body.addEventListener("DOMMouseScroll", function (e) { onMouseWheel(e); }, false);//Mozilla
+        document.body.addEventListener('DOMMouseScroll', function (e) { onMouseWheel(e); }, false);//this is for Mozilla
 
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        //statistics
-        stats = new Stats();
-        stats.setMode(0); // 0: fps, 1: ms
-
-        // align down left
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.bottom = '0px';
-
-        //document.body.appendChild(stats.domElement);
     }
 
-    function onMouseWheel(event) {
-
+    function onMouseWheel(event)
+    {
         var delta = 0;
 
         if (event.wheelDelta) //Chrome
@@ -115,12 +85,14 @@
             delta = event.detail*3;
         }
 
-        if (camera.position.z + delta > 120 && camera.position.z + delta < 233) {
+        if (camera.position.z + delta > minZoom && camera.position.z + delta < maxZoom)
+        {
             camera.translateZ(delta);
         }
     }
 
-    function onMouseMove(event) {
+    function onMouseMove(event)
+    {
         if (!mouseDown) {
             return;
         }
@@ -130,40 +102,33 @@
         mouseX = event.clientX;
         mouseY = event.clientY;
 
-        rotatePlanet(deltaX, deltaY);
+        moveCamera(deltaX, deltaY);
     }
 
-    function onMouseDown(event) {
-        mouseDown = true;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-    }
-
-    function onMouseUp(event) {
-        mouseDown = false;
-    }
-
-    function rotatePlanet(deltaX, deltaY)
+    function moveCamera(deltaX, deltaY)
     {
-        var currentX = planet.position.x;
-        var currentY = planet.position.y;
-
         deltaX = -(deltaX / 5);
         deltaY = (deltaY / 5);
 
-        planet.geometry.computeBoundingBox();
-        
+        worldPlane.geometry.computeBoundingBox();
+        boundingBox = worldPlane.geometry.boundingBox;
+
         var offsetX = 200;
         var offsetY = 100;
 
-        if (camera.position.x + deltaX + offsetX > planet.geometry.boundingBox.max.x ||
-            camera.position.x + deltaX - offsetX < planet.geometry.boundingBox.min.x)
+        //we want camera movement to be limited by the dimensions
+        //of the world plane. We dont want to go outside of the plane
+        //we achieve this by stopping the camera movement when we reach certain offsets of
+        //the dimensions of the plane
+
+        if (camera.position.x + deltaX + offsetX > boundingBox.max.x ||
+            camera.position.x + deltaX - offsetX < boundingBox.min.x)
         {
             deltaX = 0;
         }
 
-        if (camera.position.y + deltaY + offsetY > planet.geometry.boundingBox.max.y ||
-            camera.position.y + deltaY - offsetY < planet.geometry.boundingBox.min.y)
+        if (camera.position.y + deltaY + offsetY > boundingBox.max.y ||
+            camera.position.y + deltaY - offsetY < boundingBox.min.y)
         {
             deltaY = 0;
         }
@@ -172,26 +137,37 @@
         camera.translateY(deltaY);
     }
 
+    function onMouseDown(event)
+    {
+        mouseDown = true;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
 
-    function mainLoop() {
+    function onMouseUp(event)
+    {
+        mouseDown = false;
+    }
+
+    function mainLoop()
+    {
+        //with this function we call the mainLoop function again
+        //achieving infinite loop
         requestAnimationFrame(mainLoop);
-        stats.begin();
 
         update();
         render();
-
-        stats.end();
     }
 
     function update()
     {
-            //controls.update();
+        
     }
 
-    function render() {
+    function render()
+    {
         renderer.render(scene, camera);
     }
-
 
     function setVisibility(id, visibility)
     {
@@ -202,165 +178,111 @@
 
 
     <!--search form-->
-
-     <div id="searchDiv" style="position:absolute;top:0;left:0;margin-top:50px;margin-left:50px;font-size:15pt;font-family:'Times New Roman';">
-
-         <form id="searchForm">
-          
-            <!-- Enter starting cell x coordinate <br/>  -->
-             <input name="startX" id="search" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-
-            <input type="button" style="font-size:15pt;font-family:'Times New Roman';" value="Search" />
+    <div id="searchDiv" style="position: absolute; top: 0; left: 0; margin-top: 50px; margin-left: 50px; font-size: 15pt; font-family: 'Times New Roman';">
+        <form id="searchForm">
+            <input id="search" value="" style="font-size: 15pt; font-family: 'Times New Roman'" />
+            <input type="button" style="font-size: 15pt; font-family: 'Times New Roman';" value="Search" />
         </form>
 
     </div>
 
-     <!--Login button-->
-
-    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;font-size:15pt;font-family:'Times New Roman';">
-
+    <!--Login button-->
+    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
         <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
- 
     </div>
 
     <!--Login dialog-->
+    <div id="openLogin" class="loginDialog">
+        <div>
+            <a href="#openLogin" onclick="setVisibility('openLogin', 'hidden');" class="closeButtonLogin">X</a>
 
-     <div id="openLogin" class="loginDialog">
+            <div style="position: relative; left: 16%;">
+                <form id="Form1">
+                    <br /><br />
 
-         <div>
-             <a href="#openLogin"  onclick="setVisibility('openLogin', 'hidden');" title="Close" class="closeButtonLogin">X</a>
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
 
-             <div style="position:relative;left:16%;">
-                 <form id="Form1">
-           
-                     <br /><br />
+                    Username <br />
+                    <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
 
-                     <label style="font-size:25pt;font-family:'Times New Roman'">Login </label>
-                     
-                     <br /><br />
+                    Password<br />
+                    <input name="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                     Username <br/> 
-                     <input name="username" id="username" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
-
-                     Password <br/>
-                     <input name="password" id="password" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
-
-                    <input type="button" style="font-size:15pt;font-family:'Times New Roman'" value="Login" />
-
+                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
                 </form>
-
             </div>
-            
-
-            </div>
-
+        </div>
     </div>
 
     <!--Register button-->
-
-    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;font-size:15pt;font-family:'Times New Roman';">
-
+    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;">
         <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
- 
     </div>
 
     <!--Register dialog-->
+    <div id="openRegister" class="registerDialog">
+        <div>
+            <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
-     <div id="openRegister" class="registerDialog">
+            <div style="position: relative; left: 16%;">
+                <form id="Form2">
+                    <br /><br />
 
-         <div>
-             <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
 
-             <div style="position:relative;left:16%;">
-                 <form id="Form2">
-           
-                     <br /><br />
+                    Email <br />
+                    <input name="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                     <label style="font-size:25pt;font-family:'Times New Roman'">Register</label>
-                     
-                     <br /><br />
+                    Username<br />
+                    <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
 
-                     Email <br/> 
-                     <input name="email" id="Text3" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
+                    Password
+                    <br />
+                    <input name="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                     Username <br/> 
-                     <input name="username" id="Text1" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
+                    Repeat password<br />
+                    <input name="repeatPassword" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                     Password <br/>
-                     <input name="password" id="Text2" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
-
-                     Repeat password <br/>
-                     <input name="repeatPassword" id="Text4" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
-
-                    <input type="button" style="font-size:15pt;font-family:'Times New Roman'" value="Register" />
-
+                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
                 </form>
-
             </div>
-            
-
-            </div>
-
+        </div>
     </div>
 
      <!--3d mode button-->
-
-    <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;font-size:15pt;font-family:'Times New Roman';">
-
-        <form action="index_3d_mode.html">
-            <input type="submit" name ="register" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
+    <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
+        <form action="index3DMode.html">
+            <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
         </form>
- 
     </div>
 
 
     <!-- find route button -->
-
-    <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;font-size:15pt;font-family:'Times New Roman';">
-
+    <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;">
         <button name ="openRoute" id ="Button1" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRoute', 'visible');"> Find route </button>
- 
     </div>
 
     <!-- find route dialog -->
-
     <div id="openRoute" class="routeDialog">
+        <div>
+            <a href="#openRoute" onclick="setVisibility('openRoute', 'hidden');" title="Close" class="closeButtonRoute">X</a>
+            <div style="position: relative; left: 8%;">
+                <form id="Form3">
 
-         <div>
-             <a href="#openRoute" onclick="setVisibility('openRoute', 'hidden');" title="Close" class="closeButtonRoute">X</a>
+                    <br />
 
-             <div style="position:relative;left:8%;">
-                 <form id="Form3">
-           
-                     <br />
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Find route between places</label><br /><br />
 
-                     <label style="font-size:25pt;font-family:'Times New Roman'">Find route between places</label>
-                     
-                     <br /><br />
+                    Starting place <br />
+                    <input name="email" id="Text5" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                     Starting place <br/> 
-                     <input name="email" id="Text5" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
+                    Target place<br />
+                    <input name="username" id="Text6" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
 
-                     Target place <br/> 
-                     <input name="username" id="Text6" value="" style="font-size:15pt;font-family:'Times New Roman'"/>
-                     <br /><br />
-
-                    <input type="button" style="font-size:15pt;font-family:'Times New Roman'" value="Find route" />
-
+                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Find route" />
                 </form>
-
             </div>
-            
-
-         </div>
-
+        </div>
     </div>
 
 </body> 
