@@ -1,7 +1,7 @@
 <html> 
 <head> 
     <title>TSuKBG</title> 
-    <link rel="stylesheet" type="text/css" href="style.css" media="all"> 
+    <link rel="stylesheet" type="text/css" href="style.css"> 
 </head> 
 
 <body> 
@@ -10,7 +10,7 @@
 
 <script>
 
-    // --allow-file-access-from-files should be added when starting chrome locally
+    // --allow-file-access-from-files should be added in Properties-> Target when starting chrome locally
     // so local files can be loaded. This is because of security restrictions
 
     var renderer, camera, scene, pointLight, worldPlane;
@@ -37,6 +37,7 @@
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //camera
+        //vertical field of view, aspect ratio, near plane, far plane
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.set(80, 100, 200);
 
