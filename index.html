@@ -79,7 +79,7 @@
 
         if (event.wheelDelta) //Chrome
         {
-            delta = -event.wheelDelta / 120;
+            delta = -event.wheelDelta / 20;
         }
         else if (event.detail) //Mozilla
         {
@@ -152,8 +152,6 @@
 
     function mainLoop()
     {
-        //with this function we call the mainLoop function again
-        //achieving infinite loop
         requestAnimationFrame(mainLoop);
 
         update();
