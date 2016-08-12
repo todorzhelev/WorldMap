@@ -1,18 +1,6 @@
-* the borders of the countries should be added
-
-* the quality of the textures should be improved
-	- the bump map should be fixed
-
--------------------------------------------------------------
-
-not mandatory:
-
-* night mode with lights only?
-
-* there must be second version of the maps - 2d
-
-* different countries should be clickable
-
-
-
-
+1. Tile map should be created
+2. Loading models of buildings
+3. Units collect resources and go to base
+4. Basic UI
+5. Resources
+6. Login/Register
