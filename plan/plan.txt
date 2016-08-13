@@ -1,10 +1,11 @@
 1. Units collect resources and go to base
 2. Basic UI
 3. Resources
-4. Login/Register
-5. Should fix the texture of the building
-6. Better textures
-
+4. Login + sessions
+5. Register - entries are saved into the DB, but it should be validated
+6. Should fix the texture of the building
+7. Better textures and models - should get models from SC2
+8. The buttons for switching between screens should be like in WAA
 
 done:
 1. Tile map should be created

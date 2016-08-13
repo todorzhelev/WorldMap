@@ -213,25 +213,25 @@
         <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
         <div style="position: relative; left: 13%;">
-            <form id="Form2">
+            <form action="action.php" method="post" id="Form2">
                 <br /><br />
 
                 <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
 
                 Email <br />
-                <input name="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                <input name="email" type="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
                 Username<br />
                 <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
 
                 Password
                 <br />
-                <input name="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                <input name="password" type="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
                 Repeat password<br />
-                <input name="repeatPassword" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                <input name="repeatPassword" type="password" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
+                <input type="submit" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
             </form>
         </div>
     </div>
@@ -239,7 +239,7 @@
 
 <!--2d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
-    <form action="index.html">
+    <form action="index2dMode.php">
         <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 2D mode">
     </form>
 </div> 
