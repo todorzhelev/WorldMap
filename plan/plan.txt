@@ -1,9 +1,12 @@
-2. Loading models of buildings - almost done - without textures though
-3. Units collect resources and go to base
-4. Basic UI
-5. Resources
-6. Login/Register
+1. Units collect resources and go to base
+2. Basic UI
+3. Resources
+4. Login/Register
+5. Should fix the texture of the building
+6. Better textures
 
 
 done:
 1. Tile map should be created
+2. Loading and spawning textured trees
+3. Linked the different screens
