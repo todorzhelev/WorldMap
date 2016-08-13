@@ -175,114 +175,75 @@
 
 </script>
 
+<!--Login button-->
+<div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
+    <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
+</div>
 
-    <!--search form-->
-    <div id="searchDiv" style="position: absolute; top: 0; left: 0; margin-top: 50px; margin-left: 50px; font-size: 15pt; font-family: 'Times New Roman';">
-        <form id="searchForm">
-            <input id="search" value="" style="font-size: 15pt; font-family: 'Times New Roman'" />
-            <input type="button" style="font-size: 15pt; font-family: 'Times New Roman';" value="Search" />
-        </form>
+<!--Login dialog-->
+<div id="openLogin" class="loginDialog">
+    <div>
+        <a href="#openLogin" onclick="setVisibility('openLogin', 'hidden');" class="closeButtonLogin">X</a>
 
-    </div>
+        <div style="position: relative; left: 10%;">
+            <form id="Form1">
+                <br /><br />
 
-    <!--Login button-->
-    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
-        <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
-    </div>
+                <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
 
-    <!--Login dialog-->
-    <div id="openLogin" class="loginDialog">
-        <div>
-            <a href="#openLogin" onclick="setVisibility('openLogin', 'hidden');" class="closeButtonLogin">X</a>
+                Username <br />
+                <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
 
-            <div style="position: relative; left: 10%;">
-                <form id="Form1">
-                    <br /><br />
+                Password<br />
+                <input name="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
-
-                    Username <br />
-                    <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
-
-                    Password<br />
-                    <input name="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
-
-                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
-                </form>
-            </div>
+                <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
+            </form>
         </div>
     </div>
+</div>
 
-    <!--Register button-->
-    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;">
-        <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
-    </div>
+<!--Register button-->
+<div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;">
+    <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
+</div>
 
-    <!--Register dialog-->
-    <div id="openRegister" class="registerDialog">
-        <div>
-            <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
+<!--Register dialog-->
+<div id="openRegister" class="registerDialog">
+    <div>
+        <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
-            <div style="position: relative; left: 13%;">
-                <form id="Form2">
-                    <br /><br />
+        <div style="position: relative; left: 13%;">
+            <form id="Form2">
+                <br /><br />
 
-                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
+                <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
 
-                    Email <br />
-                    <input name="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                Email <br />
+                <input name="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                    Username<br />
-                    <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
+                Username<br />
+                <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
 
-                    Password
-                    <br />
-                    <input name="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                Password
+                <br />
+                <input name="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                    Repeat password<br />
-                    <input name="repeatPassword" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                Repeat password<br />
+                <input name="repeatPassword" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
-                </form>
-            </div>
+                <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
+            </form>
         </div>
     </div>
+</div>
 
-     <!--3d mode button-->
-    <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
-        <form action="index3DMode.html">
-            <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
-        </form>
-    </div>
-
-
-    <!-- find route button -->
-    <div style="position:absolute;top:0;left:0;margin-top:50px;margin-left:400px;">
-        <button name ="openRoute" id ="Button1" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRoute', 'visible');"> Find route </button>
-    </div>
-
-    <!-- find route dialog -->
-    <div id="openRoute" class="routeDialog">
-        <div>
-            <a href="#openRoute" onclick="setVisibility('openRoute', 'hidden');" title="Close" class="closeButtonRoute">X</a>
-            <div style="position: relative; left: 8%;">
-                <form id="Form3">
-
-                    <br /><br />
-
-                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Find route between places</label><br /><br />
-
-                    Starting place <br />
-                    <input name="email" id="Text5" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
-
-                    Target place<br />
-                    <input name="username" id="Text6" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
-
-                    <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Find route" />
-                </form>
-            </div>
-        </div>
-    </div>
+ <!--3d mode button-->
+<div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
+    <form action="index3DMode.html">
+        <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
+    </form>
+</div>
 
 </body> 
 

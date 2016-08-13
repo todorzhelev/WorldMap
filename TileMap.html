@@ -6,20 +6,223 @@
 
 <body>
 
-<script src="js/three.min.js"></script> 
+<script src="js/three.min.js"></script>
+<script src="js/TrackballControls.js"></script>
+<script src="js/Detector.js"></script> 
+<script src="js/stats.min.js"></script>
 
 <script type="text/javascript">
 	
+	var renderer, camera, scene, pointLight, worldPlane;
+    var mouseDown = false, mouseX = 0, mouseY = 0;
+    var minZoom = 20, maxZoom = 150;
+    var tileMapSizeX = 15, tileMapSizeY = 15;
+    var tileMap = [];
+    var stats
 
+    var grassTexture = THREE.ImageUtils.loadTexture('textures/grass.jpg');
+    var grassMaterial = new THREE.MeshPhongMaterial({ map: grassTexture });
+	var defaultMaterial = new THREE.MeshBasicMaterial({ color:0xffff00, wireframe:true });
 
+    init();
+    mainLoop();
 
+    //gameplay logic
+    var gold, trees;
 
+    function initMesh() 
+    {
+	    var loader = new THREE.JSONLoader();
+	    loader.load('models/house.json', function(geometry) 
+	    {
+	        mesh = new THREE.Mesh(geometry);
+	        scene.add(mesh);
+	    });
+	}
 
+    function init()
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        //renderer
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        //scene
+        scene = new THREE.Scene();
 
-	
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //camera
+        //vertical field of view, aspect ratio, near plane, far plane
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+        camera.position.set(300, 600, 200);
+        camera.rotateX(-Math.PI/3);
+        scene.add(camera);
+ 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  		//var geometry = new THREE.PlaneGeometry(1024,1024,32,32);
+		// var material = new THREE.MeshBasicMaterial({color:0xffff00, side: THREE.DoubleSide, wireframe: true});
+
+		// var tileMap = new THREE.Mesh(geometry,material);
+		// tileMap.rotateX(Math.PI / 2);
+		// scene.add(tileMap);
+
+		GenerateTable();
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		initMesh();
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//statistics
+        stats = new Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.bottom = '0px';
+
+        document.body.appendChild(stats.domElement);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////     
+
+        // ambient light
+        scene.add(new THREE.AmbientLight(0xffffff));
+
+        var light = new THREE.DirectionalLight(0xffffff, 0.2);
+        light.position.set(0, 50, 0);
+        scene.add(light);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //listeners for mouse move, mouse down, mouse up, mouse wheel
+
+        document.body.addEventListener('mousemove', function (e) { onMouseMove(e); }, false);
+        document.body.addEventListener('mousedown', function (e) { onMouseDown(e); }, false);
+        document.body.addEventListener('mouseup', function (e) { onMouseUp(e); }, false);
+        document.body.addEventListener('mousewheel', function (e) { onMouseWheel(e); }, false);
+        document.body.addEventListener('DOMMouseScroll', function (e) { onMouseWheel(e); }, false);//this is for Mozilla
+
+    }
+
+	function GenerateTable()
+    {
+        tileMap = new Array(tileMapSizeX);
+
+        for (var i = 0; i < tileMapSizeX; i++)
+        {
+            tileMap[i] = new Array(tileMapSizeY);
+        }
+
+        var width = 100;
+        var height = 100;
+        for (var i = 0; i < tileMapSizeX; i++)
+        {
+            for (var j = 0; j < tileMapSizeY; j++)
+            {
+                //plane with width 10 height 10 1 segment
+                var geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+
+                var mesh = new THREE.Mesh(geometry, grassMaterial);
+
+                //mesh.translateX(width * j);
+
+                //we want the next row to be below the current
+               // mesh.translateY(-height * i);
+
+               	mesh.translateX(width * j);
+               //	
+               	mesh.translateZ(-height * i);
+               	mesh.rotateX(-Math.PI / 2);
+
+                //we store the planes in table, which we will use later
+                tileMap[i][j] = mesh;
+                scene.add(mesh);
+            }
+        }
+    }
+
+    function onMouseWheel(event)
+    {
+        var delta = 0;
+
+        if (event.wheelDelta) //Chrome
+        {
+            delta = -event.wheelDelta / 20;
+        }
+        else if (event.detail) //Mozilla
+        {
+            delta = event.detail*3;
+        }
+
+        if (camera.position.z + delta > minZoom && camera.position.z + delta < maxZoom)
+        {
+            camera.translateZ(delta);
+        }
+    }
+
+    function onMouseMove(event)
+    {
+        if (!mouseDown) {
+            return;
+        }
+
+        var deltaX = event.clientX - mouseX;
+        var deltaY = event.clientY - mouseY;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+        moveCamera(deltaX, deltaY);
+    }
+
+    function moveCamera(deltaX, deltaY)
+    {
+        deltaX = -(deltaX / 5);
+        deltaY = (deltaY / 5);
+
+        camera.translateX(deltaX);
+        camera.translateY(deltaY);
+    }
+
+    function onMouseDown(event)
+    {
+        mouseDown = true;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
+
+    function onMouseUp(event)
+    {
+        mouseDown = false;
+    }
+
+    function mainLoop()
+    {
+        requestAnimationFrame(mainLoop);
+        stats.begin();
+
+	        update();
+	        render();
+
+	    stats.end();
+    }
+
+    function update()
+    {
+        
+    }
+
+    function render()
+    {
+        renderer.render(scene, camera);
+    }
+
 </script>
 
 

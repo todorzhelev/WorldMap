@@ -1,6 +1,9 @@
-1. Tile map should be created
-2. Loading models of buildings
+2. Loading models of buildings - almost done - without textures though
 3. Units collect resources and go to base
 4. Basic UI
 5. Resources
 6. Login/Register
+
+
+done:
+1. Tile map should be created
