@@ -1,3 +1,85 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['login_user']))
+{
+    if( isset($_SESSION))
+    {
+        session_destroy(); 
+    } 
+}
+
+if(isset($_POST['RegisterSubmitButton']))
+{
+    if( $_POST["email"] && $_POST["username"] && $_POST["password"] )
+    {
+        $host = "localhost";
+        $db = "players";
+        $user = "root";
+        $pass = "";
+        $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
+
+        $stmt = $conn->prepare("INSERT INTO logindata (username, password, email)
+                                VALUES (:username, :password, :email)");
+
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':email', $email);
+
+        $username = $_POST["username"];
+        $password = $_POST["password"];
+        $email = $_POST["email"];
+        $stmt->execute();
+    }      
+}
+elseif (isset($_POST['LoginSubmitButton'])) 
+{
+    if($_POST["username"] && $_POST["password"] )
+    {
+        $host = "localhost";
+        $db = "players";
+        $user = "root";
+        $pass = "";
+        $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
+
+        $stmt = $conn->prepare("SELECT * FROM logindata where username = :username and password= :password");
+
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+
+        $username = $_POST["username"];
+        $password = $_POST["password"];
+
+        if( $stmt->execute() )
+        {
+            if ($row = $stmt->fetch()) 
+            {
+                session_start();
+                $_SESSION['login_user']= $row["username"];
+
+                echo 'Hello'.$_SESSION['login_user'];
+            }
+            else
+            {
+                echo 'No such user in the database';
+            }
+        }
+        else
+        {
+            echo 'Failed to execute statement';
+        }
+    } 
+}
+elseif (isset($_POST['logout'])) 
+{
+    if( isset($_SESSION) )
+    {
+        $_SESSION['login_user'] = null;
+    }  
+}
+
+?>
+
 <html> 
 <head> 
     <title>World domination</title> 
@@ -175,68 +257,88 @@
 
 </script>
 
-<!--Login button-->
-<div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
-    <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
-</div>
+<?php
+ if(isset($_SESSION['login_user']))
+ {
+?>
+    <form action="" method="post" id="Form2">
+         <!--Logout button-->
+        <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
+            <input name ="logout" type="submit" id ="logout" style="font-size:15pt;font-family:'Times New Roman'" value ="Logout"> Logout </button>
+        </div>
+    </form>
 
-<!--Login dialog-->
-<div id="openLogin" class="loginDialog">
-    <div>
-        <a href="#openLogin" onclick="setVisibility('openLogin', 'hidden');" class="closeButtonLogin">X</a>
+<?php
+}
+else
+{
+?>
+     <!--Login button-->
+    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
+        <button name ="login" id ="login" style="font-size:15pt;font-family:'Times New Roman'" value ="Login" onclick="setVisibility('openLogin', 'visible');"> Login </button>
+    </div>
 
-        <div style="position: relative; left: 10%;">
-            <form id="Form1">
-                <br /><br />
+    <!--Login dialog-->
+    <div id="openLogin" class="loginDialog">
+        <div>
+            <a href="#openLogin" onclick="setVisibility('openLogin', 'hidden');" class="closeButtonLogin">X</a>
 
-                <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
+            <div style="position: relative; left: 10%;">
+                <form action="" method="post" id="Form1">
+                    <br /><br /><br />
 
-                Username <br />
-                <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
 
-                Password<br />
-                <input name="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    Username <br />
+                    <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
 
-                <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
-            </form>
+                    Password<br />
+                    <input name="password" type="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+
+                    <input type="submit" name="LoginSubmitButton" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!--Register button-->
-<div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;">
-    <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
-</div>
+    <!--Register button-->
+    <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:200px;">
+        <button name ="register" id ="Button2" style="font-size:15pt;font-family:'Times New Roman'" onclick="setVisibility('openRegister', 'visible');"> Register </button>
+    </div>
 
-<!--Register dialog-->
-<div id="openRegister" class="registerDialog">
-    <div>
-        <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
+    <!--Register dialog-->
+    <div id="openRegister" class="registerDialog">
+        <div>
+            <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
-        <div style="position: relative; left: 13%;">
-            <form id="Form2">
-                <br /><br />
+            <div style="position: relative; left: 13%;">
+                <form action="" method="post" id="Form2">
+                    <br /><br />
 
-                <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
 
-                Email <br />
-                <input name="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    Email <br />
+                    <input name="email" type="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                Username<br />
-                <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
+                    Username<br />
+                    <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
 
-                Password
-                <br />
-                <input name="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    Password
+                    <br />
+                    <input name="password" type="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                Repeat password<br />
-                <input name="repeatPassword" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    Repeat password<br />
+                    <input name="repeatPassword" type="password" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                <input type="button" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
-            </form>
+                    <input type="submit" name="RegisterSubmitButton" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
+                </form>
+            </div>
         </div>
     </div>
-</div>
+
+<?php
+}
+?>
 
  <!--3d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
