@@ -1,6 +1,32 @@
 <?php
 session_start();
 
+$DUPLICATE_ENTRY_CODE = 1062;
+
+function showErrorMessage($message)
+{
+?>
+    <div id="openErrorMessage" class="registerDialog">
+        <div>
+            <a href="#openErrorMessage" onclick="setVisibility('openErrorMessage', 'hidden');" class="closeButtonRegister">X</a>
+
+            <div style="position: relative; left: 10%;">
+                <form action="" method="post" id="Form1">
+                    <br /><br /><br />
+
+                    <label style="font-size: 25pt; font-family: 'Times New Roman'"><?php echo $message; ?> </label> <br /><br />
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('openErrorMessage').style.visibility = 'visible';
+    </script>
+<?php
+}
+
 if(!isset($_SESSION['login_user']))
 {
     if( isset($_SESSION))
@@ -13,23 +39,43 @@ if(isset($_POST['RegisterSubmitButton']))
 {
     if( $_POST["email"] && $_POST["username"] && $_POST["password"] )
     {
-        $host = "localhost";
-        $db = "players";
-        $user = "root";
-        $pass = "";
-        $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
+        if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) 
+        {
+            showErrorMessage('Cannot register user. You have entered invalid email');
+        }
+        else
+        {
+            $host = "localhost";
+            $db = "players";
+            $user = "root";
+            $pass = "";
+            $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
 
-        $stmt = $conn->prepare("INSERT INTO logindata (username, password, email)
-                                VALUES (:username, :password, :email)");
+            $stmt = $conn->prepare("INSERT INTO logindata (username, password, email)
+                                    VALUES (:username, :password, :email)");
 
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':email', $email);
 
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-        $email = $_POST["email"];
-        $stmt->execute();
+            $username = $_POST["username"];
+            $password = hash("sha256",$_POST["password"]);
+            $email = $_POST["email"];
+            $result = $stmt->execute(); 
+
+            if ($result) 
+            {
+                showErrorMessage('You registered successfully.');
+            } 
+            else 
+            {
+                $error = $stmt->errorInfo();
+                if ($error[1] == $DUPLICATE_ENTRY_CODE) 
+                {
+                    showErrorMessage('Such user exists in the database');
+                }
+            }
+        }      
     }      
 }
 elseif (isset($_POST['LoginSubmitButton'])) 
@@ -48,25 +94,23 @@ elseif (isset($_POST['LoginSubmitButton']))
         $stmt->bindParam(':password', $password);
 
         $username = $_POST["username"];
-        $password = $_POST["password"];
+        $password = hash("sha256",$_POST["password"]);
 
-        if( $stmt->execute() )
+        $result = $stmt->execute();
+
+        if ( $result && $stmt->rowCount() == 1) 
         {
-            if ($row = $stmt->fetch()) 
-            {
-                session_start();
-                $_SESSION['login_user']= $row["username"];
+            //the session should be started here, because if we switch to another page
+            //it will not save the login_user data
+            session_start();
 
-                echo 'Hello'.$_SESSION['login_user'];
-            }
-            else
-            {
-                echo 'No such user in the database';
-            }
+            $row = $stmt->fetch();
+            $_SESSION['login_user']= $row["username"];
+
         }
         else
         {
-            echo 'Failed to execute statement';
+            showErrorMessage('No such user in the database');
         }
     } 
 }
@@ -255,6 +299,28 @@ elseif (isset($_POST['logout']))
         document.getElementById(id).style.visibility = visibility;
     }
 
+    //basic client-side validation
+    function validateForm()
+    {
+        var email          = document.forms["RegisterForm"]["email"].value;
+        var username       = document.forms["RegisterForm"]["username"].value;
+        var password       = document.forms["RegisterForm"]["password"].value;
+        var repeatPassword = document.forms["RegisterForm"]["repeatPassword"].value;
+
+        if (email=="" || username=="" || password=="" || repeatPassword=="")
+        {
+            alert("Fill all fields");
+            return false;
+        }
+
+        if( password != repeatPassword )
+        {
+            alert("Passwords does not match");
+            return false;
+        }
+
+        return true;
+    }
 </script>
 
 <?php
@@ -264,7 +330,7 @@ elseif (isset($_POST['logout']))
     <form action="" method="post" id="Form2">
          <!--Logout button-->
         <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
-            <input name ="logout" type="submit" id ="logout" style="font-size:15pt;font-family:'Times New Roman'" value ="Logout"> Logout </button>
+            <input name ="logout" type="submit" id ="logout" style="font-size:15pt;font-family:'Times New Roman'" value ="Logout"></button>
         </div>
     </form>
 
@@ -312,7 +378,7 @@ else
             <a href="#openRegister" onclick="setVisibility('openRegister', 'hidden');" title="Close" class="closeButtonRegister">X</a>
 
             <div style="position: relative; left: 13%;">
-                <form action="" method="post" id="Form2">
+                <form action="" method="post" id="Form2" name="RegisterForm" onsubmit="return validateForm();">
                     <br /><br />
 
                     <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
@@ -330,7 +396,7 @@ else
                     Repeat password<br />
                     <input name="repeatPassword" type="password" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
 
-                    <input type="submit" name="RegisterSubmitButton" style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
+                    <input type="submit" name="RegisterSubmitButton"  style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
                 </form>
             </div>
         </div>
@@ -339,6 +405,12 @@ else
 <?php
 }
 ?>
+
+<?php
+if(isset($_SESSION["login_user"]))
+{
+?>   
+
 <!--2d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
     <form action="index2dMode.php">
@@ -346,6 +418,9 @@ else
     </form>
 </div> 
 
+<?php
+}
+?>
 </body> 
 
 </html>

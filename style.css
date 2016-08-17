@@ -87,7 +87,7 @@ body
 
 .closeButtonRegister:hover { background: #00d9ff; }
 
-.routeDialog 
+.errorMessageDialog 
 {
 	position: fixed;
 	font-family: Arial, Helvetica, sans-serif;
@@ -102,7 +102,7 @@ body
     visibility:hidden;
 }
 
-.routeDialog > div 
+.errorMessageDialog > div 
 {
 	width: 300px;
     height: 350px;
@@ -113,7 +113,7 @@ body
 	background: #fff;
 }
 
-.closeButtonRoute 
+.closeButtonErrorMessageDialog 
 {
 	background: #606061;
 	color: #FFFFFF;
@@ -128,4 +128,4 @@ body
 	border-radius: 12px;
 }
 
-.closeButtonRoute:hover { background: #00d9ff; }
+.closeButtonErrorMessageDialog:hover { background: #00d9ff; }

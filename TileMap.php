@@ -275,7 +275,7 @@
 
 <!--2d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
-    <form action="index.php">
+    <form action="index2dMode.php">
         <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 2D mode">
     </form>
 </div> 
