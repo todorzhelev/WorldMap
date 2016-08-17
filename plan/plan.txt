@@ -6,7 +6,7 @@
 6. The buttons for switching between screens should be like in WAA
 7. Code refactor
 8. overview map and tilemap should be inaccessible if not logged in
-
+9. Duplicate entries should be fixed
 
 done:
 1. Tile map should be created
