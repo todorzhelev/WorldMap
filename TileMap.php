@@ -39,9 +39,12 @@ if(!isset($_SESSION['login_user']))
     var grassMaterial = new THREE.MeshPhongMaterial({ map: grassTexture });
 	var defaultMaterial = new THREE.MeshBasicMaterial({ color:0xffff00, wireframe:true });
 
-	var treeModelName = "models/tree4.json"
-	var houseModelName = "models/house.json"
-
+	var treeModelName = "models/tree4.json";
+	var houseModelName = "models/house.json";
+	var commandCenterModelName = "models/CommandCenter.json";
+	var mineralFieldModelName = "models/MineralField.json";
+	var galio = "models/galio.json";
+	
     init();
     mainLoop();
 
@@ -79,9 +82,12 @@ if(!isset($_SESSION['login_user']))
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		loadMeshWithMaterial("models/house.json",650,-750, 1);
+		loadMeshWithMaterial(galio,"galio",650,-750, 0.3,0);
+
+        loadMeshWithMaterial(houseModelName,"base",650,-500, 1,3.14);
 
 		spawnTrees();
+        spawnMineralFields();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -161,10 +167,10 @@ if(!isset($_SESSION['login_user']))
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function loadMeshWithMaterial(meshName, xPos, zPos,scale) 
+    function loadMeshWithMaterial(meshPath,name, xPos, zPos,scale, rotY) 
     {
 	    var loader = new THREE.JSONLoader();
-	    loader.load(meshName, function(geometry,materials) 
+	    loader.load(meshPath, function(geometry,materials) 
 	    {
 	    	var material = new THREE.MeshFaceMaterial(materials);
 	    	material.transparent = true;
@@ -173,6 +179,8 @@ if(!isset($_SESSION['login_user']))
 	        mesh.translateX(xPos);
 	        mesh.translateZ(zPos);
 	        mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+            mesh.rotateY(rotY);
+            mesh.name = name;
 	        scene.add(mesh);
 	    });
 	}
@@ -191,10 +199,26 @@ if(!isset($_SESSION['login_user']))
 		{
 			for(var j = startZ; j != endZ; j-=step)
 			{
-				loadMeshWithMaterial(treeModelName,i,j, scale);
+				loadMeshWithMaterial(treeModelName,"three",i,j, scale,0);
 			}
 		}
 	}
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function spawnMineralFields()
+    {
+        var scale = 3.5;
+
+        var startX = 1200;
+        var startZ = -800, endZ = -300;
+        var step = 100;
+
+        for(var j = startZ; j != endZ; j+=step)
+        {
+            loadMeshWithMaterial(mineralFieldModelName,"mineralField",startX,j, scale,0);
+        }
+    }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -274,7 +298,11 @@ if(!isset($_SESSION['login_user']))
 
     function update()
     {
-        
+        var object = scene.getObjectByName("galio");
+        if( object )
+        {
+          object.rotation.y += 0.03;  
+        } 
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
