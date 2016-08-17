@@ -4,7 +4,7 @@
 4. Should fix the texture of the building
 5. Better textures and models - should get models from SC2
 6. The buttons for switching between screens should be like in WAA
-7. Code refactor - especially css
+7. Code refactor - especially css (2/10)
 8. Some gameplay
 
 
