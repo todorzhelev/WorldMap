@@ -193,14 +193,14 @@ if(!isset($_SESSION['login_user']))
  <!--3d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
     <form action="index.php">
-        <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 3D mode">
+        <input type="submit" value ="Go to planet">
     </form>
 </div>
 
  <!--play button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:50px;margin-left:50px;">
     <form action="TileMap.php">
-        <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Play">
+        <input type="submit" value ="Play">
     </form>
 </div>
 

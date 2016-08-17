@@ -330,7 +330,7 @@ elseif (isset($_POST['logout']))
     <form action="" method="post" id="Form2">
          <!--Logout button-->
         <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
-            <input name ="logout" type="submit" id ="logout" style="font-size:15pt;font-family:'Times New Roman'" value ="Logout"></button>
+            <input name ="logout" type="submit" id ="logout" value ="Logout"></button>
         </div>
     </form>
 
@@ -415,7 +415,7 @@ if(isset($_SESSION["login_user"]))
 <!--2d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
     <form action="index2dMode.php">
-        <input type="submit" id ="Submit2" value ="Go to 2D mode">
+        <input type="submit" id ="Submit2" value ="Go to 2D map">
     </form>
 </div> 
 
