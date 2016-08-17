@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['login_user']))
+{
+    echo 'You have to be logged in to access this page';
+    ?>
+    <a href="index.php">index.php</a>
+<?php
+
+    exit();
+}
+
+?>
+
 <html> 
 <head> 
     <title>World domination</title> 

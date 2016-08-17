@@ -4,9 +4,9 @@
 4. Should fix the texture of the building
 5. Better textures and models - should get models from SC2
 6. The buttons for switching between screens should be like in WAA
-7. Code refactor
-8. overview map and tilemap should be inaccessible if not logged in
-9. Duplicate entries should be fixed
+7. Code refactor - especially css
+8. Some gameplay
+
 
 done:
 1. Tile map should be created
@@ -15,3 +15,5 @@ done:
 4. Login + sessions
 5. Register - entries are saved into the DB, but it should be validated
 6. Error message should be output after submitting a form
+7. Duplicate entries should be fixed
+8. overview map and tilemap should be inaccessible if not logged in
