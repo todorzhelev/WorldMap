@@ -356,12 +356,12 @@ else
                     <label style="font-size: 25pt; font-family: 'Times New Roman'">Login </label> <br /><br />
 
                     Username <br />
-                    <input name="username" id="username" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /> <br />
+                    <input name="username"/> <br /> <br />
 
                     Password<br />
-                    <input name="password" type="password" id="password" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    <input name="password" type="password"/> <br /><br />
 
-                    <input type="submit" name="LoginSubmitButton" style="font-size: 15pt; font-family: 'Times New Roman'" value="Login" />
+                    <input type="submit" name="LoginSubmitButton" value="Login" />
                 </form>
             </div>
         </div>
@@ -384,19 +384,20 @@ else
                     <label style="font-size: 25pt; font-family: 'Times New Roman'">Register</label><br /><br />
 
                     Email <br />
-                    <input name="email" type="email" id="Text3" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    <input name="email" type="email"/> <br /><br />
 
                     Username<br />
-                    <input name="username" id="Text1" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /> <br /><br />
+                    <input name="username"/> <br /><br />
 
                     Password
                     <br />
-                    <input name="password" type="password" id="Text2" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    <input name="password" type="password" /> <br /><br />
 
                     Repeat password<br />
-                    <input name="repeatPassword" type="password" id="Text4" value="" style="font-size: 15pt; font-family: 'Times New Roman'" /><br /><br />
+                    <input name="repeatPassword" type="password"/> <br /><br />
 
-                    <input type="submit" name="RegisterSubmitButton"  style="font-size: 15pt; font-family: 'Times New Roman'" value="Register" />
+                    <input type="submit" name="RegisterSubmitButton" value="Register" />
+
                 </form>
             </div>
         </div>
@@ -414,7 +415,7 @@ if(isset($_SESSION["login_user"]))
 <!--2d mode button-->
 <div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:50px;">
     <form action="index2dMode.php">
-        <input type="submit" id ="Submit2" style="font-size:15pt;font-family:'Times New Roman'" value ="Go to 2D mode">
+        <input type="submit" id ="Submit2" value ="Go to 2D mode">
     </form>
 </div> 
 

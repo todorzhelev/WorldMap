@@ -129,3 +129,9 @@ body
 }
 
 .closeButtonErrorMessageDialog:hover { background: #00d9ff; }
+
+input
+{
+	font-size: 15pt;
+	font-family:"Times New Roman";
+}
