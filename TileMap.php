@@ -29,11 +29,12 @@ if(!isset($_SESSION['login_user']))
 <script type="text/javascript">
 	
 	var renderer, camera, scene, pointLight, worldPlane;
-    var mouseDown = false, mouseX = 0, mouseY = 0;
+    var mouseDown = false;
     var minZoom = -300, maxZoom = 600;
     var tileMapSizeX = 15, tileMapSizeY = 15, tileWidth = 100, tileHeight = 100;
     var tileMap = [];
     var stats;
+    var mouse;
 
     var grassTexture = THREE.ImageUtils.loadTexture('textures/grass.jpg');
     var grassMaterial = new THREE.MeshPhongMaterial({ map: grassTexture });
@@ -49,7 +50,32 @@ if(!isset($_SESSION['login_user']))
     mainLoop();
 
     //gameplay logic
-    var gold, trees;
+    var mineralsAmount = 0, treesAmount = 0;
+    var workerMaxResources = 400;
+
+    var states = 
+    {
+        IDLE: 0,
+        MOVING: 1,
+        COLLECTING_RESOURCES: 2,
+        RETURNING_RESOURCES: 3
+    };
+
+    var worker1 =
+    {
+        workerName : "worker1",
+        collectedTrees : 0,
+        collectedMinerals: 0,
+        currentState: states.IDLE
+    }
+
+    var worker2 =
+    {
+        workerName : "worker2",
+        collectedTrees : 0,
+        collectedMinerals: 0,
+        currentState: states.IDLE
+    }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,12 +103,18 @@ if(!isset($_SESSION['login_user']))
         scene.add(camera);
  
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        mouse = new THREE.Vector2();
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		generateTileMap();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		loadMeshWithMaterial(galio,"galio",650,-750, 0.3,0);
+		loadMeshWithMaterial(galio,"worker1",650,-750, 0.3,0);
+
+        loadMeshWithMaterial(galio,"worker2",800,-750, 0.3,0);
 
         loadMeshWithMaterial(houseModelName,"base",650,-500, 1,3.14);
 
@@ -199,7 +231,7 @@ if(!isset($_SESSION['login_user']))
 		{
 			for(var j = startZ; j != endZ; j-=step)
 			{
-				loadMeshWithMaterial(treeModelName,"three",i,j, scale,0);
+				loadMeshWithMaterial(treeModelName,"mapThree",i,j, scale,0);
 			}
 		}
 	}
@@ -249,10 +281,12 @@ if(!isset($_SESSION['login_user']))
             return;
         }
 
-        var deltaX = event.clientX - mouseX;
-        var deltaY = event.clientY - mouseY;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+        var deltaX = event.clientX - mouse.x;
+        var deltaY = event.clientY - mouse.y;
+
+
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
 
         moveCamera(deltaX, deltaY);
     }
@@ -270,8 +304,8 @@ if(!isset($_SESSION['login_user']))
     function onMouseDown(event)
     {
         mouseDown = true;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,11 +332,94 @@ if(!isset($_SESSION['login_user']))
 
     function update()
     {
-        var object = scene.getObjectByName("galio");
-        if( object )
+        var worker1Mesh = scene.getObjectByName("worker1"); 
+        var three1Mesh = scene.getObjectByName("mapThree");
+        var baseMesh = scene.getObjectByName("base");
+
+        if( worker1Mesh && three1Mesh && baseMesh)
         {
-          object.rotation.y += 0.03;  
-        } 
+            switch(worker1.currentState)
+            {
+                case states.IDLE:
+                {
+                    worker1.currentState = states.MOVING;
+                    break;
+                }
+
+                case states.MOVING:
+                {
+                    if( !isActorAtTarget(worker1Mesh,three1Mesh) )
+                    {
+                        moveActorToTarget(worker1Mesh,three1Mesh);
+                    }
+                    else
+                    {
+                       worker1.currentState = states.COLLECTING_RESOURCES; 
+                    }
+
+                    break;
+                }
+
+                case states.COLLECTING_RESOURCES:
+                {
+                    if( worker1.collectedTrees < workerMaxResources )
+                    {
+                        ++worker1.collectedTrees;
+                    }
+                    else
+                    {
+                        worker1.currentState =  states.RETURNING_RESOURCES;
+                    }
+
+                    break;
+                }
+
+                case states.RETURNING_RESOURCES:
+                {
+                    if( !isActorAtTarget(worker1Mesh,baseMesh) )
+                    {
+                        moveActorToTarget(worker1Mesh,baseMesh);
+                    }
+                    else
+                    {
+                        treesAmount += worker1.collectedTrees;
+                        worker1.collectedTrees = 0;
+                        worker1.currentState = states.IDLE; 
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        PrintTreesAmount();
+        PrintMineralsAmount();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function moveActorToTarget(actor,target)
+    {
+        var dir = new THREE.Vector3();
+        dir.subVectors(target.position,actor.position);
+        dir.normalize();
+
+        var newPosition = new THREE.Vector3();
+        newPosition.addVectors(actor.position,dir);
+        actor.position.set(newPosition.x,newPosition.y,newPosition.z);  
+    }
+
+    function isActorAtTarget(actor,target)
+    {
+        var epsilon = 2;
+        var actorPos = actor.position;
+        var targetPos = target.position;
+
+        var dx = Math.abs(targetPos.x - actorPos.x);
+        var dy = Math.abs(targetPos.y - actorPos.y);
+        var dz = Math.abs(targetPos.z - actorPos.z);
+
+        return ( dx < epsilon && dy < epsilon && dz < epsilon );
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,6 +427,26 @@ if(!isset($_SESSION['login_user']))
     function render()
     {
         renderer.render(scene, camera);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function PrintTreesAmount()
+    {
+        if(document.getElementById("treesAmount"))
+        {
+            document.getElementById("treesAmount").innerHTML = "Trees amount: " + treesAmount;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function PrintMineralsAmount()
+    {
+        if(document.getElementById("mineralsAmount"))
+        {
+            document.getElementById("mineralsAmount").innerHTML = "Minerals amount:" + mineralsAmount;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,6 +460,11 @@ if(!isset($_SESSION['login_user']))
     </form>
 </div> 
 
+<!-- document.write prints the returned value at this place -->
+<div style="position:absolute;top:0;right:0;margin-top:10px;margin-right:50px;">
+    <p id = "treesAmount" style="color:white"></p>
+    <p id = "mineralsAmount" style="color:white"></p>
+</div>
 
 </body>
 </html>
