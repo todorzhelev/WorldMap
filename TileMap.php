@@ -51,7 +51,7 @@ if(!isset($_SESSION['login_user']))
 
     //gameplay logic
     var mineralsAmount = 0, treesAmount = 0;
-    var workerMaxResources = 400;
+    var workerMaxResources = 200;
 
     var states = 
     {
@@ -66,7 +66,8 @@ if(!isset($_SESSION['login_user']))
         workerName : "worker1",
         collectedTrees : 0,
         collectedMinerals: 0,
-        currentState: states.IDLE
+        currentState: states.IDLE,
+        currentTree: null
     }
 
     var worker2 =
@@ -103,7 +104,7 @@ if(!isset($_SESSION['login_user']))
         scene.add(camera);
  
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         mouse = new THREE.Vector2();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,11 +228,13 @@ if(!isset($_SESSION['login_user']))
 		var startZ = -900, endZ = -1300;
 		var step = 100;
 
+        var id = 0;
 		for(var i = startX; i != endX; i+= step)
 		{
 			for(var j = startZ; j != endZ; j-=step)
 			{
-				loadMeshWithMaterial(treeModelName,"mapThree",i,j, scale,0);
+				loadMeshWithMaterial(treeModelName,"tree"+id.toString(),i,j, scale,0);
+                id++;
 			}
 		}
 	}
@@ -331,26 +334,29 @@ if(!isset($_SESSION['login_user']))
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function update()
-    {
+    {  
         var worker1Mesh = scene.getObjectByName("worker1"); 
-        var three1Mesh = scene.getObjectByName("mapThree");
         var baseMesh = scene.getObjectByName("base");
 
-        if( worker1Mesh && three1Mesh && baseMesh)
+        if( worker1Mesh && baseMesh)
         {
             switch(worker1.currentState)
             {
                 case states.IDLE:
                 {
+                    //TODO: no magic numbers
+                    var currentTree = getRandomInt(0,23);
+                    worker1.currentTree = scene.getObjectByName("tree"+currentTree.toString());
+
                     worker1.currentState = states.MOVING;
                     break;
                 }
 
                 case states.MOVING:
                 {
-                    if( !isActorAtTarget(worker1Mesh,three1Mesh) )
+                    if( !isActorAtTarget(worker1Mesh,worker1.currentTree) )
                     {
-                        moveActorToTarget(worker1Mesh,three1Mesh);
+                        moveActorToTarget(worker1Mesh,worker1.currentTree);
                     }
                     else
                     {
@@ -400,14 +406,19 @@ if(!isset($_SESSION['login_user']))
 
     function moveActorToTarget(actor,target)
     {
+        var coeff = 3;
+
         var dir = new THREE.Vector3();
         dir.subVectors(target.position,actor.position);
         dir.normalize();
 
+        dir.multiplyScalar(coeff);
         var newPosition = new THREE.Vector3();
         newPosition.addVectors(actor.position,dir);
         actor.position.set(newPosition.x,newPosition.y,newPosition.z);  
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function isActorAtTarget(actor,target)
     {
@@ -447,6 +458,16 @@ if(!isset($_SESSION['login_user']))
         {
             document.getElementById("mineralsAmount").innerHTML = "Minerals amount:" + mineralsAmount;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function getRandomInt(min, max) 
+    {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+
+        return Math.floor(Math.random() * (max - min)) + min;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
