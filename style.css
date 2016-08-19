@@ -135,3 +135,11 @@ input
 	font-size: 15pt;
 	font-family:"Times New Roman";
 }
+
+#spawnButton
+{
+    background-color: Transparent;
+    border: none;
+    cursor:pointer;
+    outline:none;
+}

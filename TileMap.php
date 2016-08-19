@@ -45,6 +45,7 @@ if(!isset($_SESSION['login_user']))
 	var commandCenterModelName = "models/CommandCenter.json";
 	var mineralFieldModelName = "models/MineralField.json";
 	var galio = "models/galio.json";
+    var house1 = "models/house1.json";
 	
     init();
     mainLoop();
@@ -113,11 +114,11 @@ if(!isset($_SESSION['login_user']))
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		loadMeshWithMaterial(galio,"worker1",650,-750, 0.3,0);
+		loadMeshWithMaterial(galio,"worker1",650,-750, 0.2,0);
 
-        loadMeshWithMaterial(galio,"worker2",800,-750, 0.3,0);
+        loadMeshWithMaterial(galio,"worker2",800,-750, 0.2,0);
 
-        loadMeshWithMaterial(houseModelName,"base",650,-500, 1,3.14);
+        loadMeshWithMaterial(house1,"base",650,-500, 4.5,3.14);
 
 		spawnTrees();
         spawnMineralFields();
@@ -243,7 +244,7 @@ if(!isset($_SESSION['login_user']))
 
     function spawnMineralFields()
     {
-        var scale = 3.5;
+        var scale = 3.0;
 
         var startX = 1200;
         var startZ = -800, endZ = -300;
@@ -472,6 +473,20 @@ if(!isset($_SESSION['login_user']))
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    function spawnDeathclaw()
+    {
+        if( treesAmount >= 400 )
+        {
+           loadMeshWithMaterial("models/deathclaw.json","deathclaw",650,-200, 1,0);
+           treesAmount -= 400; 
+        }
+        else
+        {
+            alert("You need 400 trees for Deathclaw");
+        }
+        
+    }
+
 </script>
 
 <!--2d mode button-->
@@ -485,6 +500,14 @@ if(!isset($_SESSION['login_user']))
 <div style="position:absolute;top:0;right:0;margin-top:10px;margin-right:50px;">
     <p id = "treesAmount" style="color:white"></p>
     <p id = "mineralsAmount" style="color:white"></p>
+</div>
+
+<div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:200px;">
+    <button id="spawnButton" onclick="spawnDeathclaw()">
+        <img src="textures/deathclaw.png" widht="100" height="100"/>
+        <br/>
+        <p style="color:white;font-size:15px;">Spawn Deathclaw</p>
+    </button>
 </div>
 
 </body>
