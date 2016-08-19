@@ -1,9 +1,7 @@
 1. Basic UI
-2. Should fix the texture of the building
-3. Better textures and models - should get models from SC2
-4. Code refactor - especially css (2/10)
-5. Some gameplay - buy unit after the materials are collected
-6. Try different loader than JSONLoader
+2. Code refactor - especially css (2/10)
+3. Some gameplay - buy unit after the materials are collected
+4. File reorganization
 
 done:
 1. Tile map should be created
@@ -16,3 +14,5 @@ done:
 8. overview map and tilemap should be inaccessible if not logged in
 9. Units collect resources and go to base
 10. Resources
+11. Should fix the texture of the building
+12. Better textures and models - should get models from SC2
