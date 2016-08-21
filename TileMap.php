@@ -46,6 +46,7 @@ if(!isset($_SESSION['login_user']))
 	var mineralFieldModelName = "models/MineralField.json";
 	var galio = "models/galio.json";
     var house1 = "models/house1.json";
+	var cho = "models/cho.json";
 	
     init();
     mainLoop();
@@ -142,7 +143,7 @@ if(!isset($_SESSION['login_user']))
 
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0px';
-        stats.domElement.style.bottom = '0px';
+        stats.domElement.style.top = '0px';
 
         document.body.appendChild(stats.domElement);
 
@@ -445,6 +446,11 @@ if(!isset($_SESSION['login_user']))
             } 
         }
         
+		//var dc = scene.getObjectByName("deathclaw");
+		//if(dc)
+		//{
+			//dc.rotation.y += 0.03;
+		//}
 
         PrintTreesAmount();
         PrintMineralsAmount();
@@ -524,13 +530,28 @@ if(!isset($_SESSION['login_user']))
     {
         if( treesAmount >= 400 && mineralsAmount >= 400 )
         {
-           loadMeshWithMaterial("models/deathclaw.json","deathclaw",650,-200, 1,0);
+           loadMeshWithMaterial("models/deathclaw.json","deathclaw",650,-200, 1.8,0);
            treesAmount -= 400; 
            mineralsAmount -= 400;
         }
         else
         {
             alert("You need 400 trees and 400 minerals for Deathclaw");
+        }
+        
+    }
+	
+	function spawnCho()
+    {
+        if( treesAmount >= 200 && mineralsAmount >= 200 )
+        {
+           loadMeshWithMaterial("models/cho.json","cho",220,-500, 1.5,1.57);
+           treesAmount -= 200; 
+           mineralsAmount -= 200;
+        }
+        else
+        {
+            alert("You need 200 trees and 200 minerals for Cho");
         }
         
     }
@@ -544,17 +565,24 @@ if(!isset($_SESSION['login_user']))
     </form>
 </div> 
 
-<!-- document.write prints the returned value at this place -->
 <div style="position:absolute;top:0;right:0;margin-top:10px;margin-right:50px;">
     <p id = "treesAmount" style="color:white"></p>
     <p id = "mineralsAmount" style="color:white"></p>
 </div>
 
-<div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:200px;">
+<div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:600px;">
     <button id="spawnButton" onclick="spawnDeathclaw()">
         <img src="textures/deathclaw.png" widht="100" height="100"/>
         <br/>
         <p style="color:white;font-size:15px;">Spawn Deathclaw</p>
+    </button>
+</div>
+
+<div style="position:absolute;bottom:0;left:0;margin-bottom:10px;margin-left:400px;">
+    <button id="spawnButton" onclick="spawnCho()">
+        <img src="textures/cho.png" widht="100" height="100"/>
+        <br/>
+        <p style="color:white;font-size:15px;">Spawn Cho</p>
     </button>
 </div>
 
