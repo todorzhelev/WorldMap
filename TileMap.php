@@ -62,22 +62,33 @@ if(!isset($_SESSION['login_user']))
         RETURNING_RESOURCES: 3
     };
 
+    var resource =
+    {
+        NONE:0,
+        TREES:1,
+        MINERAL_FIELDS:2
+    };
     var worker1 =
     {
         workerName : "worker1",
-        collectedTrees : 0,
-        collectedMinerals: 0,
+        collectsResourceName : "tree",
+        collectsResourceType : resource.TREES,
+        collectedResourceAmount : 0,
         currentState: states.IDLE,
-        currentTree: null
+        currentResourceObject: null
     }
 
     var worker2 =
     {
         workerName : "worker2",
-        collectedTrees : 0,
-        collectedMinerals: 0,
-        currentState: states.IDLE
+        collectsResourceName : "mineralField",
+        collectsResourceType : resource.MINERAL_FIELDS,
+        collectedResourceAmount : 0,
+        currentState: states.IDLE,
+        currentResourceObject: null
     }
+
+    var workers = [worker1,worker2];
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,6 +145,26 @@ if(!isset($_SESSION['login_user']))
         stats.domElement.style.bottom = '0px';
 
         document.body.appendChild(stats.domElement);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // the sky
+        var skyGeometry = new THREE.SphereGeometry(1500, 64, 64);
+
+        var skyMaterial = new THREE.MeshPhongMaterial;
+        var texture = THREE.ImageUtils.loadTexture('textures/galaxy_starfield1.jpg');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(12, 12);
+
+        skyMaterial.map = texture;
+
+        skyMaterial.side = THREE.BackSide;
+
+        sky = new THREE.Mesh(skyGeometry, skyMaterial);
+        sky.translateX(850);
+        sky.translateZ(-500);
+        scene.add(sky);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////     
 
@@ -250,9 +281,11 @@ if(!isset($_SESSION['login_user']))
         var startZ = -800, endZ = -300;
         var step = 100;
 
+        var id = 0;
         for(var j = startZ; j != endZ; j+=step)
         {
-            loadMeshWithMaterial(mineralFieldModelName,"mineralField",startX,j, scale,0);
+            loadMeshWithMaterial(mineralFieldModelName,"mineralField"+id.toString(),startX,j, scale,0);
+            id++;
         }
     }
 
@@ -336,68 +369,82 @@ if(!isset($_SESSION['login_user']))
 
     function update()
     {  
-        var worker1Mesh = scene.getObjectByName("worker1"); 
+        
         var baseMesh = scene.getObjectByName("base");
 
-        if( worker1Mesh && baseMesh)
+        for(var worker in workers )
         {
-            switch(worker1.currentState)
+            var workerMesh = scene.getObjectByName(workers[worker].workerName); 
+            if( workerMesh && baseMesh)
             {
-                case states.IDLE:
+                switch(workers[worker].currentState)
                 {
-                    //TODO: no magic numbers
-                    var currentTree = getRandomInt(0,23);
-                    worker1.currentTree = scene.getObjectByName("tree"+currentTree.toString());
+                    case states.IDLE:
+                    {
+                        //TODO: no magic numbers
+                        var currentTree = getRandomInt(0,5);
+                        var str = workers[worker].collectsResourceName+currentTree.toString();
+                        var object = scene.getObjectByName(str);
+                        workers[worker].currentResourceObject = object;
 
-                    worker1.currentState = states.MOVING;
-                    break;
+                        workers[worker].currentState = states.MOVING;
+                        break;
+                    }
+
+                    case states.MOVING:
+                    {
+                        if( !isActorAtTarget(workerMesh,workers[worker].currentResourceObject) )
+                        {
+                            moveActorToTarget(workerMesh,workers[worker].currentResourceObject);
+                        }
+                        else
+                        {
+                           workers[worker].currentState = states.COLLECTING_RESOURCES; 
+                        }
+
+                        break;
+                    }
+
+                    case states.COLLECTING_RESOURCES:
+                    {
+                        if( workers[worker].collectedResourceAmount < workerMaxResources )
+                        {
+                            ++workers[worker].collectedResourceAmount;
+                        }
+                        else
+                        {
+                            workers[worker].currentState =  states.RETURNING_RESOURCES;
+                        }
+
+                        break;
+                    }
+
+                    case states.RETURNING_RESOURCES:
+                    {
+                        if( !isActorAtTarget(workerMesh,baseMesh) )
+                        {
+                            moveActorToTarget(workerMesh,baseMesh);
+                        }
+                        else
+                        {
+                            if(workers[worker].collectsResourceType == resource.TREES)
+                            {
+                                treesAmount += workers[worker].collectedResourceAmount;
+                            }
+                            else if(workers[worker].collectsResourceType == resource.MINERAL_FIELDS)
+                            {
+                                mineralsAmount += workers[worker].collectedResourceAmount;
+                            }
+                            workers[worker].collectedResourceAmount = 0;
+                            workers[worker].currentState = states.IDLE; 
+                        }
+
+                        break;
+                    }
                 }
-
-                case states.MOVING:
-                {
-                    if( !isActorAtTarget(worker1Mesh,worker1.currentTree) )
-                    {
-                        moveActorToTarget(worker1Mesh,worker1.currentTree);
-                    }
-                    else
-                    {
-                       worker1.currentState = states.COLLECTING_RESOURCES; 
-                    }
-
-                    break;
-                }
-
-                case states.COLLECTING_RESOURCES:
-                {
-                    if( worker1.collectedTrees < workerMaxResources )
-                    {
-                        ++worker1.collectedTrees;
-                    }
-                    else
-                    {
-                        worker1.currentState =  states.RETURNING_RESOURCES;
-                    }
-
-                    break;
-                }
-
-                case states.RETURNING_RESOURCES:
-                {
-                    if( !isActorAtTarget(worker1Mesh,baseMesh) )
-                    {
-                        moveActorToTarget(worker1Mesh,baseMesh);
-                    }
-                    else
-                    {
-                        treesAmount += worker1.collectedTrees;
-                        worker1.collectedTrees = 0;
-                        worker1.currentState = states.IDLE; 
-                    }
-
-                    break;
-                }
-            }
+            } 
         }
+        
 
         PrintTreesAmount();
         PrintMineralsAmount();
@@ -475,14 +522,15 @@ if(!isset($_SESSION['login_user']))
 
     function spawnDeathclaw()
     {
-        if( treesAmount >= 400 )
+        if( treesAmount >= 400 && mineralsAmount >= 400 )
         {
            loadMeshWithMaterial("models/deathclaw.json","deathclaw",650,-200, 1,0);
            treesAmount -= 400; 
+           mineralsAmount -= 400;
         }
         else
         {
-            alert("You need 400 trees for Deathclaw");
+            alert("You need 400 trees and 400 minerals for Deathclaw");
         }
         
     }

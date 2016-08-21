@@ -22,7 +22,7 @@
 	"colorDiffuse" : [0.58819999999999995, 0.58819999999999995, 0.58819999999999995],
 	"colorSpecular" : [0.0, 0.0, 0.0],
 	"illumination" : 2,
-	"mapDiffuse" : "texture.jpg",
+	"mapDiffuse" : "../textures/texture.jpg",
 	"opacity" : 1.0,
 	"opticalDensity" : 1.5,
 	"specularCoef" : 10.0

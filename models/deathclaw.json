@@ -22,7 +22,7 @@
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [1.0, 1.0, 1.0],
 	"illumination" : 2,
-	"mapDiffuse" : "Deathclaw_d.png",
+	"mapDiffuse" : "../textures/Deathclaw_d.png",
 	"opacity" : 1.0,
 	"opticalDensity" : 1.5,
 	"specularCoef" : 33.0

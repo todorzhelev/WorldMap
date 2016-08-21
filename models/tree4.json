@@ -22,7 +22,7 @@
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.0, 0.0, 0.0],
 	"illumination" : 2,
-	"mapDiffuse" : "tree4_2.png",
+	"mapDiffuse" : "../textures/tree4_2.png",
 	"specularCoef" : 0.0
 	},
 
@@ -33,7 +33,7 @@
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.0, 0.0, 0.0],
 	"illumination" : 2,
-	"mapDiffuse" : "tree4_1.png",
+	"mapDiffuse" : "../textures/tree4_1.png",
 	"specularCoef" : 0.0
 	}],
 

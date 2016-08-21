@@ -22,7 +22,7 @@
 	"colorDiffuse" : [0.58799999999999997, 0.58799999999999997, 0.58799999999999997],
 	"colorSpecular" : [0.0, 0.0, 0.0],
 	"illumination" : 2,
-	"mapDiffuse" : "resourcecrystaldiff_yellow.jpg",
+	"mapDiffuse" : "../textures/resourcecrystaldiff_yellow.jpg",
 	"opacity" : 1.0,
 	"opticalDensity" : 1.5,
 	"specularCoef" : 10.0
