@@ -2,6 +2,7 @@
 session_start();
 
 $DUPLICATE_ENTRY_CODE = 1062;
+$MIN_PASSWORD_LENGTH = 6;
 
 function showErrorMessage($message)
 {
@@ -42,6 +43,10 @@ if(isset($_POST['RegisterSubmitButton']))
         if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) 
         {
             showErrorMessage('Cannot register user. You have entered invalid email');
+        }
+        elseif ( strlen($_POST["password"]) < $MIN_PASSWORD_LENGTH )
+        {
+            showErrorMessage('Password should be atleast '.$MIN_PASSWORD_LENGTH.' symbols');
         }
         else
         {
@@ -136,6 +141,8 @@ elseif (isset($_POST['logout']))
 <script src="js/three.min.js"></script> 
 
 <script>
+
+    var minPasswordLength = 6;
 
     // --allow-file-access-from-files should be added when starting chrome
     // so local files can be loaded. This is because of security restrictions
@@ -319,6 +326,12 @@ elseif (isset($_POST['logout']))
             return false;
         }
 
+        if( password.length < minPasswordLength )
+        {
+            alert("Password should be atleast "+minPasswordLength.toString()+" symbols");
+            return false;
+        }
+
         return true;
     }
 </script>
@@ -327,12 +340,10 @@ elseif (isset($_POST['logout']))
  if(isset($_SESSION['login_user']))
  {
 ?>
-    <form action="" method="post" id="Form2">
-         <!--Logout button-->
-        <div style="position:absolute;top:0;right:0;margin-top:50px;margin-right:100px;">
-            <input name ="logout" type="submit" id ="logout" value ="Logout"></button>
-        </div>
-    </form>
+    <!--Logout button-->
+    <form action="" method="post" id="LogoutForm" > 
+        <input name ="logout" type="submit" id ="logout" value ="Logout"></button>
+    </form> 
 
 <?php
 }

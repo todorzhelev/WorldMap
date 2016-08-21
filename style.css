@@ -143,3 +143,12 @@ input
     cursor:pointer;
     outline:none;
 }
+
+#LogoutForm
+{
+	position:absolute;
+	top:0px;
+	right:0px;
+	margin-top:50px;
+	margin-right:100px;
+}
